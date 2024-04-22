@@ -1,0 +1,38 @@
+#!groovy
+//@Library('kubernetes') _
+
+def deployment = [
+        // ------------------------ 以下需要修改,其他勿动 ------------------------
+        // 工程代码地址
+        GIT_URL : "https://github.com/ly1836/im.git",
+        // applicationName 应用名
+        APP_NAME: "im-user",
+        // 端口号
+        APP_PORT: 12089,
+        // 编译后的可执行jar路径（相对于工程根目录）
+        FILE    : "/chat-modules/chat-user/target/chat-user-0.0.1-SNAPSHOT.jar",
+        // ------------------------ 以上需要修改,其他勿动 ------------------------
+]
+
+// 发布相关的个性化配置(无须修改)
+def config = [
+        // 对应三个发布环境：开发、测试、生产
+        ENV_NAMES      : ["Development", "Test", "Production"],
+        "Development"  : [
+                BRANCH      : "master",
+                PROFILE     : "dev",
+        ],
+        "Test"         : [
+                BRANCH      : "master",
+                PROFILE     : "test",
+        ],
+        "Production"   : [
+                BRANCH      : "master",
+                PROFILE     : "prod"
+        ],
+        // 当前脚本只针对：spring boot编译的可执行jar包
+        TYPE           : "jar"
+]
+
+// @see vars/deploy.groovy
+//deploy(config, deployment)

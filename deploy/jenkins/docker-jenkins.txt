@@ -1,0 +1,31 @@
+
+mkdir -p /home/deploy/jenkins/
+cd /home/deploy/jenkins
+
+
+#---------------------------------------------------
+
+docker run -d \
+-p 8099:8080 -p 50099:50000 \
+-v /home/deploy/jenkins/data:/var/jenkins_home \
+--name jenkins jenkins/jenkins:2.440.3-lts-jdk17
+
+#权限问题
+chown -R 1000 /home/deploy/jenkins/
+docker restart jenkins
+
+#设置开机启动
+docker update --restart=always jenkins
+
+
+
+#---------------------------------------------------
+#安装插件：https://plugins.jenkins.io/branch-api/releases/
+#进入容器
+docker exec -it jenkins /bin/bash
+#安装插件
+jenkins-plugin-cli --plugins branch-api:2.1152.v6f101e97dd77
+
+
+#资料
+https://developer.aliyun.com/article/892646
