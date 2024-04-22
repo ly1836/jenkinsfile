@@ -34,5 +34,9 @@ def config = [
         TYPE           : "jar"
 ]
 
-// @see vars/deploy.groovy
-deploy(config, deployment)
+// @see deploy.groovy
+def rootDir = pwd()
+echo rootDir
+def deployModule = load "${rootDir}@script/deploy.groovy "
+deployModule.call(config, deployment)
+
