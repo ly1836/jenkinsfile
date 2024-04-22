@@ -36,7 +36,7 @@ def config = [
 
 // @see deploy.groovy
 def rootDir = pwd()
-echo rootDir
-def deployModule = load "${rootDir}@script/deploy.groovy "
+echo ${rootDir}
+def deployModule = load "${rootDir}@script/deploy.groovy"
 deployModule.call(config, deployment)
 
