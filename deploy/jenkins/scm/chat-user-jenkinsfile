@@ -35,7 +35,8 @@ def config = [
 ]
 
 node {
-        def deployModule = load "${WORKSPACE}@script/deploy/jenkins/scm/deploy.groovy"
+        checkout scm
+        def deployModule = load "${WORKSPACE}@script/deploy.groovy"
         deployModule.call(config, deployment)
 }
 
