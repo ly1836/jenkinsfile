@@ -35,4 +35,4 @@ def config = [
 ]
 
 // @see vars/deploy.groovy
-//deploy(config, deployment)
+deploy(config, deployment)
