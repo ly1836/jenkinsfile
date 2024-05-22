@@ -46,17 +46,13 @@ agent {
 }
 
 pipeline {
-        agent {
-                node {
-                        def deploy = load 'deploy.groovy'
-                        deploy.call(config, deployment)
-                        echo "调用groovy脚本方法"
-                }
-        }
         stages {
                 stage('测试stage') {
                         steps {
                                 echo "进入测试stage"
+                                def deploy = load 'deploy.groovy'
+                                deploy.call(config, deployment)
+                                echo "调用groovy脚本方法"
                         }
                 }
         }
