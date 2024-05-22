@@ -36,13 +36,6 @@ def config = [
 
 // @see vars/deploy.groovy
 //call deploy(config, deployment)
-
-def deploy
-agent {
-        node {
-                deploy = load 'deploy.groovy'
-        }
-}
-
+def deploy = load 'deploy.groovy'
 deploy.call(config, deployment)
 echo "调用groovy脚本方法"
