@@ -3,6 +3,7 @@
 def call(Map config, Map deployment) {
     echo "进入groovy脚本方法"
     if (config.TYPE == "jar") {
+        echo "构建类型：jar"
         pipeline {
             agent any
             environment {

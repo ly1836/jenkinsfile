@@ -47,7 +47,6 @@ pipeline {
                 stage('Example') {
                         steps{
                                 script {
-
                                         testScript = load("deploy/jenkins/scm/deploy.groovy")
                                         echo 'Hello World'
                                 }
