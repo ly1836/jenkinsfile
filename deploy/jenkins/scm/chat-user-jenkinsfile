@@ -34,10 +34,7 @@ def config = [
         TYPE           : "jar"
 ]
 
-node {
-        checkout scm
-        def deployModule = load "${WORKSPACE}@script/deploy.groovy"
-        deployModule.call(config, deployment)
-}
+// @see vars/deploy.groovy
+deploy(config, deployment)
 
 
