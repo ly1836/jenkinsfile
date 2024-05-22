@@ -37,10 +37,9 @@ def config = [
 // @see vars/deploy.groovy
 //call deploy(config, deployment)
 
-def pipeline
-agent {
+pipeline {
         node {
-                pipeline = load 'deploy.groovy'
-                pipeline.call(config, deployment)
+                def deploy = load 'deploy.groovy'
+                deploy.call(config, deployment)
         }
 }
