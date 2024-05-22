@@ -44,9 +44,8 @@ pipeline {
         agent any
         stages {
                 stage('Example') {
-                        steps {
-                                def deploy = load 'deploy.groovy'
-                                deploy.call(config, deployment)
+                        steps{
+                                load("deploy.groovy").call(config, deployment)
                                 echo 'Hello World'
                         }
                 }
