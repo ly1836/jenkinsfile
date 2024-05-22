@@ -45,6 +45,8 @@ pipeline {
         stages {
                 stage('Example') {
                         steps {
+                                def deploy = load 'deploy.groovy'
+                                deploy.call(config, deployment)
                                 echo 'Hello World'
                         }
                 }
