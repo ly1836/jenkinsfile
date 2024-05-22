@@ -22,8 +22,3 @@ def call(Map config, Map deployment) {
         }
     }
 }
-
-
-
-
-return this
