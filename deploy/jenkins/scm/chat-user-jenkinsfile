@@ -36,6 +36,22 @@ def config = [
 
 // @see vars/deploy.groovy
 //call deploy(config, deployment)
-def deploy = load 'deploy.groovy'
-deploy.call(config, deployment)
-echo "调用groovy脚本方法"
+//def deploy = load 'deploy.groovy'
+//deploy.call(config, deployment)
+//echo "调用groovy脚本方法"
+
+pipeline {
+        agent any
+        stages {
+                stage('Example') {
+                        steps {
+                                echo 'Hello World'
+                        }
+                }
+        }
+        post {
+                always {
+                        echo 'I will always say Hello again!'
+                }
+        }
+}
