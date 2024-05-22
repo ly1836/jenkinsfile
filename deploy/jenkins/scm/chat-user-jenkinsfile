@@ -41,5 +41,6 @@ agent {
         node {
                 def deploy = load 'deploy.groovy'
                 deploy.call(config, deployment)
+                echo "调用groovy脚本方法"
         }
 }
