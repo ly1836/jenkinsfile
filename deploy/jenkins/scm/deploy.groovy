@@ -3,7 +3,7 @@
 def call(Map config, Map deployment) {
     echo "进入groovy脚本方法"
     if (config.TYPE == "jar") {
-        echo "构建类型：jar"
+
         pipeline {
             agent any
             environment {
@@ -14,6 +14,16 @@ def call(Map config, Map deployment) {
                 // 发布环境
                 choice(name: "ENV_NAME", choices: config.ENV_NAMES, description: "发布环境")
             }
+            stages {
+                stage{
+                    steps {
+                        echo "开始发布： 应用: ${deployment.APP_NAME}"
+                        echo "构建类型：${config.TYPE}"
+                        echo "发布环境：${config.ENV_NAMES}"
+                    }
+                }
+            }
+
             post {
                 always {
                     echo "发布完毕： 应用: ${deployment.APP_NAME}"
