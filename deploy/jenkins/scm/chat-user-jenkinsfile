@@ -40,19 +40,25 @@ def config = [
 //deploy.call(config, deployment)
 //echo "调用groovy脚本方法"
 
+def testScript
 pipeline {
         agent any
         stages {
                 stage('Example') {
                         steps{
-                                load("deploy.groovy").call(config, deployment)
-                                echo 'Hello World'
+                                script {
+                                        testScript = load("deploy.groovy")
+                                        echo 'Hello World'
+                                }
                         }
                 }
         }
         post {
                 always {
-                        echo 'I will always say Hello again!'
+                        script {
+                                testScript.call(config, deployment)
+                                echo 'I will always say Hello again!'
+                        }
                 }
         }
 }
