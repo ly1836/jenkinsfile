@@ -15,7 +15,7 @@ def call(Map config, Map deployment) {
                 choice(name: "ENV_NAME", choices: config.ENV_NAMES, description: "发布环境")
             }
             stages {
-                stage('构建阶段1') {
+                stage('build-stage-1') {
                     steps {
                         echo "开始发布： 应用: ${deployment.APP_NAME}"
                         echo "构建类型：${config.TYPE}"
