@@ -35,6 +35,6 @@ def config = [
 ]
 
 // @see vars/deploy.groovy
-deploy(config, deployment)
+call deploy(config, deployment)
 
 
