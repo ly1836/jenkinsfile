@@ -35,6 +35,7 @@ def config = [
 ]
 
 // @see vars/deploy.groovy
-call deploy(config, deployment)
+//call deploy(config, deployment)
 
-
+def pipeline = load 'deploy.groovy'
+pipeline.call(config, deployment)
