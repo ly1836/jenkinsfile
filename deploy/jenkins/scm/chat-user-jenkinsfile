@@ -42,7 +42,7 @@ def config = [
 
 node {
     echo "构建路径：${WORKSPACE}/deploy/jenkins/scm/deploy.groovy"
-    sh "ls -l /deploy/jenkins/scm/"
+    sh "ls -l ${WORKSPACE}/deploy/jenkins/scm/"
     def deployScript = load("${WORKSPACE}/deploy/jenkins/scm/deploy.groovy")
     deployScript.call(config, deployment)
 }
