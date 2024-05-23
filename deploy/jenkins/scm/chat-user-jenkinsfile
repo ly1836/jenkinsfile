@@ -17,21 +17,21 @@ def deployment = [
 // 发布相关的个性化配置(无须修改)
 def config = [
         // 对应三个发布环境：开发、测试、生产
-        ENV_NAMES      : ["Development", "Test", "Production"],
-        "Development"  : [
-                BRANCH      : "master",
-                PROFILE     : "dev",
+        ENV_NAMES    : ["Development", "Test", "Production"],
+        "Development": [
+                BRANCH : "master",
+                PROFILE: "dev",
         ],
-        "Test"         : [
-                BRANCH      : "master",
-                PROFILE     : "test",
+        "Test"       : [
+                BRANCH : "master",
+                PROFILE: "test",
         ],
-        "Production"   : [
-                BRANCH      : "master",
-                PROFILE     : "prod"
+        "Production" : [
+                BRANCH : "master",
+                PROFILE: "prod"
         ],
         // 当前脚本只针对：spring boot编译的可执行jar包
-        TYPE           : "jar"
+        TYPE         : "jar"
 ]
 
 // @see vars/deploy.groovy
@@ -40,8 +40,11 @@ def config = [
 //deploy.call(config, deployment)
 //echo "调用groovy脚本方法"
 
-def testScript = load("deploy/jenkins/scm/deploy.groovy")
-testScript.call(config, deployment)
+node {
+    def testScript = load("deploy/jenkins/scm/deploy.groovy")
+    testScript.call(config, deployment)
+}
+
 //pipeline {
 //        agent any
 //        stages {
