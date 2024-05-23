@@ -41,7 +41,7 @@ def config = [
 //echo "调用groovy脚本方法"
 
 node {
-    echo "构建路径：${WORKSPACE}/deploy/jenkins/scm/deploy.groovy"
+    echo "构建路径：${WORKSPACE}"
     sh "ls -l ${WORKSPACE}/"
     sh "ls -l ${WORKSPACE}/deploy/"
     sh "ls -l ${WORKSPACE}/deploy/jenkins/"
