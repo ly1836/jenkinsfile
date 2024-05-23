@@ -40,25 +40,26 @@ def config = [
 //deploy.call(config, deployment)
 //echo "调用groovy脚本方法"
 
-def testScript
-pipeline {
-        agent any
-        stages {
-                stage('Example') {
-                        steps{
-                                script {
-                                        testScript = load("deploy/jenkins/scm/deploy.groovy")
-                                        echo 'Hello World'
-                                }
-                        }
-                }
-        }
-        post {
-                always {
-                        script {
-                                testScript.call(config, deployment)
-                                echo 'I will always say Hello again!'
-                        }
-                }
-        }
-}
+def testScript = load("deploy/jenkins/scm/deploy.groovy")
+testScript.call(config, deployment)
+//pipeline {
+//        agent any
+//        stages {
+//                stage('Example') {
+//                        steps{
+//                                script {
+//                                        testScript = load("deploy/jenkins/scm/deploy.groovy")
+//                                        echo 'Hello World'
+//                                }
+//                        }
+//                }
+//        }
+//        post {
+//                always {
+//                        script {
+//                                testScript.call(config, deployment)
+//                                echo 'I will always say Hello again!'
+//                        }
+//                }
+//        }
+//}
