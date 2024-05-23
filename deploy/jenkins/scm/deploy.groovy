@@ -27,6 +27,7 @@ def call(Map config, Map deployment) {
 
             post {
                 always {
+                    deleteDir()
                     echo "发布完毕： 应用: ${deployment.APP_NAME}"
                 }
             }
