@@ -41,6 +41,7 @@ def config = [
 //echo "调用groovy脚本方法"
 
 node {
+    echo "${WORKSPACE}/deploy/jenkins/scm/deploy.groovy"
     def deployScript = load("${WORKSPACE}/deploy/jenkins/scm/deploy.groovy")
     deployScript.call(config, deployment)
 }
