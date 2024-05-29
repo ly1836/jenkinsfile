@@ -67,11 +67,7 @@ def call(Map config, Map deployment) {
                 stage('打包镜像') {
                     steps {
                         script {
-                            echo "构建路径：${WORKSPACE}"
-                            sh "ls -l ${WORKSPACE}/"
-                            echo "job路径：${WORKSPACE_TMP}"
-                            sh "ls -l ${WORKSPACE_TMP}/"
-
+                            sh "ls -l ${WORKSPACE}/../"
                             echo "JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
 //                            app = docker.build("brandonjones085/test")
                         }
