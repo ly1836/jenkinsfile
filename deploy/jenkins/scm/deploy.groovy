@@ -8,9 +8,9 @@ def call(Map config, Map deployment) {
             environment {
                 // 默认镜像
                 DEFAULT_JDK_DOCKER_IMAGE = "java:8"
-                if(deployment.JDK_DOCKER_IMAGE != ''){
-//                    DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
-                }
+                /*if(deployment.JDK_DOCKER_IMAGE != ''){
+                    DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
+                }*/
                 // 默认jdk
                 DEFAULT_JAVA_HOME = "/usr/local/java/jdk1.8.0_281"
                 // 默认maven
