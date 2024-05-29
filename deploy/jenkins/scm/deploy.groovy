@@ -67,8 +67,12 @@ def call(Map config, Map deployment) {
                 stage('打包镜像') {
                     steps {
                         script {
-                            sh "ls -l ./deploy/docker/java/"
-                            //sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./deploy/dockerfile/dockerfile-user ."
+                            sh "echo 'FROM ${DEFAULT_JDK_DOCKER_IMAGE}\n" +
+                                    "VOLUME /tmp\n" +
+                                    "ADD ./chat-modules/chat-user/target/chat-user-0.0.1-SNAPSHOT.jar chat-user.jar\n" +
+                                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/chat-user.jar\"]' > Dockerfile "
+                            sh "cat ./Dockerfile"
+                            //sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./Dockerfile ."
                         }
                     }
                 }
