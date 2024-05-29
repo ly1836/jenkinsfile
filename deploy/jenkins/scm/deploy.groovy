@@ -28,7 +28,7 @@ def call(Map config, Map deployment) {
                             env.MAVEN_HOME = DEFAULT_MAVEN_HOME
 
                             env.DEFAULT_JDK_DOCKER_IMAGE = DEFAULT_JDK_DOCKER_IMAGE
-                            if(deployment.JDK_DOCKER_IMAGE != ""){
+                            if (deployment.JDK_DOCKER_IMAGE != "") {
                                 DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
                             }
 
@@ -65,11 +65,10 @@ def call(Map config, Map deployment) {
                     }
                 }
                 stage('打包镜像') {
+                    agent any
                     steps {
                         script {
-                            sh "ls -l ${WORKSPACE}/../"
-                            echo "JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
-//                            app = docker.build("brandonjones085/test")
+                            sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./deploy/dockerfile/dockerfile-user ."
                         }
                     }
                 }
