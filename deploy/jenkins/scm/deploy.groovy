@@ -21,6 +21,7 @@ def call(Map config, Map deployment) {
                 stage('输出配置信息') {
                     steps {
                         script {
+                            echo "1111111111111111111111111111111111"
                             env.PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
                             env.JAVA_HOME = DEFAULT_JAVA_HOME
