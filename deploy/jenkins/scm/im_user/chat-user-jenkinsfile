@@ -14,7 +14,7 @@ def deployment = [
         // 编译后的可执行jar路径（相对于工程根目录）
         FILE    : "chat-user-0.0.1-SNAPSHOT.jar",
         // JDK镜像
-        JDK_DOCKER_IMAGE : "java:811111"
+        JDK_DOCKER_IMAGE : ""
         // ------------------------ 以上需要修改,其他勿动 ------------------------
 ]
 
