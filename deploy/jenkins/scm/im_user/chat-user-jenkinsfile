@@ -38,12 +38,8 @@ def config = [
         TYPE         : "jar"
 ]
 
-// @see vars/deploy.groovy
-//call deploy(config, deployment)
-//def deploy = load 'deploy.groovy'
-//deploy.call(config, deployment)
-//echo "调用groovy脚本方法"
 
+//echo "调用groovy脚本方法"
 node {
     dir('anyName'){
         checkout scm: [$class: 'GitSCM', branches: [[name: '*/master']],

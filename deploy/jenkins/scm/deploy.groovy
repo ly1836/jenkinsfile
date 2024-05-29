@@ -37,7 +37,6 @@ def call(Map config, Map deployment) {
                             echo "端口: ${deployment.APP_PORT}"
                             echo "构建类型：${config.TYPE}"
                             echo "发布环境：${PROFILE}"
-                            echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
                         }
                     }
                 }
@@ -62,15 +61,17 @@ def call(Map config, Map deployment) {
                                     sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
                                 }
                             }
-                            sh "pwd"
-                            sh "ls -l"
-                            sh "ls -l ${deployment.FILE}"
                         }
                     }
                 }
                 stage('打包镜像') {
                     steps {
                         script {
+                            echo "构建路径：${WORKSPACE}"
+                            sh "ls -l ${WORKSPACE}/"
+                            echo "job路径：${WORKSPACE_TMP}"
+                            sh "ls -l ${WORKSPACE_TMP}/"
+
                             echo "JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
 //                            app = docker.build("brandonjones085/test")
                         }
