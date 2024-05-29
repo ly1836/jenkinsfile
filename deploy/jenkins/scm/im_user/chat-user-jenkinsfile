@@ -13,7 +13,7 @@ def deployment = [
         APP_PORT: 12089,
         // 编译后的可执行jar路径（相对于工程根目录）
         FILE    : "chat-user-0.0.1-SNAPSHOT.jar",
-        // JDK镜像
+        // JDK镜像(为空默认JDK8)
         JDK_DOCKER_IMAGE : ""
         // ------------------------ 以上需要修改,其他勿动 ------------------------
 ]
