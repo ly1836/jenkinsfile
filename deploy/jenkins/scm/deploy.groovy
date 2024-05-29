@@ -46,33 +46,49 @@ def call(Map config, Map deployment) {
                         git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
                     }
                 }
-//                stage("编译Maven工程") {
+                stage("编译Maven工程") {
+                    steps {
+                        script {
+                            // https://www.jenkins.io/doc/pipeline/examples/
+                            withEnv(["JAVA_HOME=${JAVA_HOME}", "PATH+MAVEN=${MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
+                                echo "=================================================="
+                                sh "mvn -version"
+                                echo "=================================================="
+                                if (PROFILE == "") {
+                                    sh "mvn clean package -T 8C -DskipTests=true -B -e -U"
+                                } else {
+                                    // https://www.jianshu.com/p/25aff2bf6e56
+                                    sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
+                                }
+                            }
+                        }
+                    }
+                }
+//                stage('打包镜像') {
 //                    steps {
 //                        script {
-//                            // https://www.jenkins.io/doc/pipeline/examples/
-//                            withEnv(["JAVA_HOME=${JAVA_HOME}", "PATH+MAVEN=${MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
-//                                echo "=================================================="
-//                                sh "mvn -version"
-//                                echo "=================================================="
-//                                if (PROFILE == "") {
-//                                    sh "mvn clean package -T 8C -DskipTests=true -B -e -U"
-//                                } else {
-//                                    // https://www.jianshu.com/p/25aff2bf6e56
-//                                    sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
-//                                }
-//                            }
+//                            sh "echo 'FROM ${DEFAULT_JDK_DOCKER_IMAGE}\n" +
+//                                    "VOLUME /tmp\n" +
+//                                    "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
+//                                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
+//                            sh "cat ./Dockerfile"
+//                            sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./Dockerfile ."
 //                        }
 //                    }
 //                }
-                stage('打包镜像') {
+                stage('打包上传镜像') {
                     steps {
                         script {
                             sh "echo 'FROM ${DEFAULT_JDK_DOCKER_IMAGE}\n" +
                                     "VOLUME /tmp\n" +
-                                    "ADD ./chat-modules/chat-user/target/chat-user-0.0.1-SNAPSHOT.jar chat-user.jar\n" +
-                                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/chat-user.jar\"]' > Dockerfile "
+                                    "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
+                                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
                             sh "cat ./Dockerfile"
-                            //sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./Dockerfile ."
+                            docker.withRegistry('https://hub.docker.com', 'dockerhub_ly753') {
+                                def dockerImage = docker.build("ly753/${deployment.APP_NAME}:latest", "-f ./Dockerfile .")
+                                dockerImage.psuh()
+                            }
+
                         }
                     }
                 }

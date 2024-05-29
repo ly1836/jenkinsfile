@@ -1,4 +1,0 @@
-FROM ${DEFAULT_JDK_DOCKER_IMAGE}
-VOLUME /tmp
-ADD ./chat-modules/chat-user/target/chat-user-0.0.1-SNAPSHOT.jar chat-user.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/chat-user.jar"]
