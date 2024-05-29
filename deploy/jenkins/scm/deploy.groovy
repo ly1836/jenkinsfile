@@ -38,9 +38,6 @@ def call(Map config, Map deployment) {
                     }
                 }
                 stage("拉取git仓库代码") {
-                    when {
-                        environment name: 'UPDATE', value: 'false'
-                    }
                     steps {
                         echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE} NAME_SPACE: ${NAME_SPACE}"
                         git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
