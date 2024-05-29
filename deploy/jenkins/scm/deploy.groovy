@@ -67,7 +67,7 @@ def call(Map config, Map deployment) {
                 stage('打包镜像') {
                     steps {
                         script {
-                            sh "ls -l /deploy/docker/java/"
+                            sh "ls -l ./deploy/docker/java/"
                             //sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./deploy/dockerfile/dockerfile-user ."
                         }
                     }
