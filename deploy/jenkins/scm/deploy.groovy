@@ -26,13 +26,14 @@ def call(Map config, Map deployment) {
                             env.JAVA_HOME = DEFAULT_JAVA_HOME
                             env.MAVEN_HOME = DEFAULT_MAVEN_HOME
                             EXT_JDK_DOCKER_IMAGE = ${deployment.JDK_DOCKER_IMAGE}
-                            if(EXT_JDK_DOCKER_IMAGE != null){
+                            if(EXT_JDK_DOCKER_IMAGE != ""){
                                 env.DEFAULT_JDK_DOCKER_IMAGE = EXT_JDK_DOCKER_IMAGE
                             }
                             echo "应用: ${deployment.APP_NAME}"
                             echo "端口: ${deployment.APP_PORT}"
                             echo "构建类型：${config.TYPE}"
                             echo "发布环境：${PROFILE}"
+                            echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE} NAME_SPACE: ${NAME_SPACE}"
                         }
                     }
                 }
