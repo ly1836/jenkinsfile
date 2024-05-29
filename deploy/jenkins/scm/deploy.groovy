@@ -21,12 +21,13 @@ def call(Map config, Map deployment) {
                 stage('输出配置信息') {
                     steps {
                         script {
-                            echo "1111111111111111111111111111111111"
+
                             env.PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
                             env.JAVA_HOME = DEFAULT_JAVA_HOME
                             env.MAVEN_HOME = DEFAULT_MAVEN_HOME
                             env.DEFAULT_JDK_DOCKER_IMAGE = DEFAULT_JDK_DOCKER_IMAGE
+                            echo "1111111111111111111111111111111111"
                             if(${deployment.JDK_DOCKER_IMAGE} != ""){
                                 env.DEFAULT_JDK_DOCKER_IMAGE = ${deployment.JDK_DOCKER_IMAGE}
                             }
