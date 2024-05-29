@@ -41,6 +41,6 @@ def config = [
 //echo "调用groovy脚本方法"
 
 node {
-    def deployScript = load("deploy1.groovy")
+    def deployScript = load("deploy.groovy")
     deployScript.call(config, deployment)
 }
