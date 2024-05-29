@@ -42,7 +42,7 @@ def config = [
 
 node {
     dir('anyName'){
-        checkout scm: [$class: 'GitSCM', branches: [[name: master]],
+        checkout scm: [$class: 'GitSCM', branches: [[name: origin/master]],
                        userRemoteConfigs: [[credentialsId: 'ly1836_github', url: 'https://github.com/ly1836/jenkinsfile.git']]
         ]
         def deployScript = load "./deploy/jenkins/scm/deploy.groovy"
