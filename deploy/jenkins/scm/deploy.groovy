@@ -62,6 +62,7 @@ def call(Map config, Map deployment) {
                                     sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
                                 }
                             }
+                            sh "ls -l ${deployment.FILE}"
                         }
                     }
                 }
@@ -69,6 +70,8 @@ def call(Map config, Map deployment) {
                     steps {
                         script {
                             echo "JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
+                            cd
+                            app = docker.build("brandonjones085/test")
                         }
                     }
                 }
