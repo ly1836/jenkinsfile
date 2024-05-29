@@ -28,10 +28,9 @@ def call(Map config, Map deployment) {
                             env.MAVEN_HOME = DEFAULT_MAVEN_HOME
                             env.DEFAULT_JDK_DOCKER_IMAGE = DEFAULT_JDK_DOCKER_IMAGE
                             echo "22222222222222222222222${deployment.JDK_DOCKER_IMAGE}"
-//                            if(deployment.JDK_DOCKER_IMAGE != ""){
-//                                env.DEFAULT_JDK_DOCKER_IMAGE = ${deployment.JDK_DOCKER_IMAGE}
-//
-//                            }
+                            if(deployment.JDK_DOCKER_IMAGE != ''){
+                                env.DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
+                            }
 
                             echo "应用: ${deployment.APP_NAME}"
                             echo "端口: ${deployment.APP_PORT}"
