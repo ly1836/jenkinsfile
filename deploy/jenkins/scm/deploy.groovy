@@ -41,30 +41,30 @@ def call(Map config, Map deployment) {
                         }
                     }
                 }
-//                stage("拉取git仓库代码") {
-//                    steps {
-//                        echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
-//                        git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
-//                    }
-//                }
-//                stage("编译Maven工程") {
-//                    steps {
-//                        script {
-//                            // https://www.jenkins.io/doc/pipeline/examples/
-//                            withEnv(["JAVA_HOME=${JAVA_HOME}", "PATH+MAVEN=${MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
-//                                echo "=================================================="
-//                                sh "mvn -version"
-//                                echo "=================================================="
-//                                if (PROFILE == "") {
-//                                    sh "mvn clean package -T 8C -DskipTests=true -B -e -U"
-//                                } else {
-//                                    // https://www.jianshu.com/p/25aff2bf6e56
-//                                    sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
+                stage("拉取git仓库代码") {
+                    steps {
+                        echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
+                        git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
+                    }
+                }
+                stage("编译Maven工程") {
+                    steps {
+                        script {
+                            // https://www.jenkins.io/doc/pipeline/examples/
+                            withEnv(["JAVA_HOME=${JAVA_HOME}", "PATH+MAVEN=${MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
+                                echo "=================================================="
+                                sh "mvn -version"
+                                echo "=================================================="
+                                if (PROFILE == "") {
+                                    sh "mvn clean package -T 8C -DskipTests=true -B -e -U"
+                                } else {
+                                    // https://www.jianshu.com/p/25aff2bf6e56
+                                    sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
+                                }
+                            }
+                        }
+                    }
+                }
                 stage('打包镜像') {
                     steps {
                         script {
