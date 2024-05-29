@@ -8,9 +8,6 @@ def call(Map config, Map deployment) {
             environment {
                 // 默认镜像
                 DEFAULT_JDK_DOCKER_IMAGE = "java:8"
-                /*if(deployment.JDK_DOCKER_IMAGE != ''){
-                    DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
-                }*/
                 // 默认jdk
                 DEFAULT_JAVA_HOME = "/usr/local/java/jdk1.8.0_281"
                 // 默认maven
@@ -24,9 +21,12 @@ def call(Map config, Map deployment) {
                 stage('输出配置信息') {
                     steps {
                         script {
-                            PROFILE = config["${ENV_NAME}"].PROFILE
+                            env.PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
                             env.JAVA_HOME = DEFAULT_JAVA_HOME
+                            if(${deployment.JDK_DOCKER_IMAGE} != null){
+                                env.DEFAULT_JDK_DOCKER_IMAGE = ${deployment.JDK_DOCKER_IMAGE}
+                            }
                             echo "应用: ${deployment.APP_NAME}"
                             echo "端口: ${deployment.APP_PORT}"
                             echo "构建类型：${config.TYPE}"
