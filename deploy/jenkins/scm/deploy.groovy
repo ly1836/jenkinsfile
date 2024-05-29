@@ -27,7 +27,6 @@ def call(Map config, Map deployment) {
                             PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
                             env.JAVA_HOME = DEFAULT_JAVA_HOME
-                            env.BASE_IMAGE = DEFAULT_BASE_IMAGE
                             echo "应用: ${deployment.APP_NAME}"
                             echo "端口: ${deployment.APP_PORT}"
                             echo "构建类型：${config.TYPE}"
