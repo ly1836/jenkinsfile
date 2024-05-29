@@ -26,6 +26,7 @@ def call(Map config, Map deployment) {
                             env.JAVA_HOME = DEFAULT_JAVA_HOME
                             env.MAVEN_HOME = DEFAULT_MAVEN_HOME
                             EXT_JDK_DOCKER_IMAGE = ${deployment.JDK_DOCKER_IMAGE}
+                            env.DEFAULT_JDK_DOCKER_IMAGE = DEFAULT_JDK_DOCKER_IMAGE
                             if(EXT_JDK_DOCKER_IMAGE != ""){
                                 env.DEFAULT_JDK_DOCKER_IMAGE = EXT_JDK_DOCKER_IMAGE
                             }
