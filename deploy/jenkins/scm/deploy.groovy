@@ -14,11 +14,13 @@ def call(Map config, Map deployment) {
                 choice(name: "ENV_NAME", choices: config.ENV_NAMES, description: "发布环境")
             }
             stages {
-                stage('build-stage-1') {
+                stage('print-stage') {
                     steps {
                         script {
                             PROFILE = config["${ENV_NAME}"].PROFILE
-                            echo "开始发布： 应用: ${deployment.APP_NAME}"
+                            echo "开始发布"
+                            echo "应用: ${deployment.APP_NAME}"
+                            echo "端口: ${deployment.APP_PORT}"
                             echo "构建类型：${config.TYPE}"
                             echo "发布环境：${PROFILE}"
                         }
