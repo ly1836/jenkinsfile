@@ -17,9 +17,10 @@ def call(Map config, Map deployment) {
                 stage('build-stage-1') {
                     steps {
                         script {
+                            PROFILE = config["${ENV_NAME}"].PROFILE
                             echo "开始发布： 应用: ${deployment.APP_NAME}"
                             echo "构建类型：${config.TYPE}"
-                            echo "发布环境1：${config.ENV_NAME}.PROFILE"
+                            echo "发布环境：${PROFILE}"
                         }
                     }
                 }
