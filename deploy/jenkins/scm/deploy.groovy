@@ -25,8 +25,9 @@ def call(Map config, Map deployment) {
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
                             env.JAVA_HOME = DEFAULT_JAVA_HOME
                             env.MAVEN_HOME = DEFAULT_MAVEN_HOME
-                            if(${deployment.JDK_DOCKER_IMAGE} != null){
-                                env.DEFAULT_JDK_DOCKER_IMAGE = ${deployment.JDK_DOCKER_IMAGE}
+                            EXT_JDK_DOCKER_IMAGE = ${deployment.JDK_DOCKER_IMAGE}
+                            if(EXT_JDK_DOCKER_IMAGE != null){
+                                env.DEFAULT_JDK_DOCKER_IMAGE = EXT_JDK_DOCKER_IMAGE
                             }
                             echo "应用: ${deployment.APP_NAME}"
                             echo "端口: ${deployment.APP_PORT}"
