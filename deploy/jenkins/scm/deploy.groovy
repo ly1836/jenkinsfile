@@ -7,7 +7,7 @@ def call(Map config, Map deployment) {
             agent any
             environment {
                 // 默认镜像
-                DEFAULT_JDK_DOCKER_IMAGE = "java:8"
+                DEFAULT_JDK_DOCKER_IMAGE = "openjdk:8"
                 // 默认jdk
                 DEFAULT_JAVA_HOME = "/usr/local/java/jdk1.8.0_281"
                 // 默认maven
@@ -46,28 +46,29 @@ def call(Map config, Map deployment) {
                         git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
                     }
                 }
-                stage("编译Maven工程") {
-                    steps {
-                        script {
-                            // https://www.jenkins.io/doc/pipeline/examples/
-                            withEnv(["JAVA_HOME=${JAVA_HOME}", "PATH+MAVEN=${MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
-                                echo "=================================================="
-                                sh "mvn -version"
-                                echo "=================================================="
-                                if (PROFILE == "") {
-                                    sh "mvn clean package -T 8C -DskipTests=true -B -e -U"
-                                } else {
-                                    // https://www.jianshu.com/p/25aff2bf6e56
-                                    sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
-                                }
-                            }
-                        }
-                    }
-                }
+//                stage("编译Maven工程") {
+//                    steps {
+//                        script {
+//                            // https://www.jenkins.io/doc/pipeline/examples/
+//                            withEnv(["JAVA_HOME=${JAVA_HOME}", "PATH+MAVEN=${MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
+//                                echo "=================================================="
+//                                sh "mvn -version"
+//                                echo "=================================================="
+//                                if (PROFILE == "") {
+//                                    sh "mvn clean package -T 8C -DskipTests=true -B -e -U"
+//                                } else {
+//                                    // https://www.jianshu.com/p/25aff2bf6e56
+//                                    sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
                 stage('打包镜像') {
                     steps {
                         script {
-                            sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./deploy/dockerfile/dockerfile-user ."
+                            sh "ls -l /deploy/docker/java/"
+                            //sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./deploy/dockerfile/dockerfile-user ."
                         }
                     }
                 }
