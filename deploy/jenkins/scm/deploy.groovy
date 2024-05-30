@@ -90,6 +90,7 @@ def call(Map config, Map deployment) {
                                 dockerImage.push()
                             }
                             sh "docker rmi ${IMAGE_NAME}"
+                            echo "删除镜像：${IMAGE_NAME}"
                         }
                     }
                 }
