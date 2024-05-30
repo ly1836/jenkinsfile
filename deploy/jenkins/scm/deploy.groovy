@@ -86,7 +86,7 @@ def call(Map config, Map deployment) {
                             sh "cat ./Dockerfile"
                             docker.withRegistry('', 'dockerhub_ly753') {
                                 def dockerImage = docker.build("ly753/repository/${deployment.APP_NAME}:latest", "-f ./Dockerfile .")
-                                dockerImage.psuh()
+                                dockerImage.psuh("latest")
                             }
 
                         }
