@@ -31,7 +31,7 @@ def call(Map config, Map deployment) {
                             if (deployment.JDK_DOCKER_IMAGE != "") {
                                 DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
                             }
-                            env.IMAGE_NAME = "ly753/repository/${deployment.APP_NAME}:latest"
+                            env.IMAGE_NAME = "ly753/${deployment.APP_NAME}:latest"
 
                             echo "默认JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
                             echo "应用: ${deployment.APP_NAME}"
