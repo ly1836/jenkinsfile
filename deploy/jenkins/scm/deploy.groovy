@@ -92,7 +92,7 @@ def call(Map config, Map deployment) {
                                     "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
                                     "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
                             sh "cat ./Dockerfile"
-                            docker.withRegistry('http://${HARBOR_SERVER_IP}/repository', 'harbor_admin') {
+                            docker.withRegistry("http://${HARBOR_SERVER_IP}/repository", 'harbor_admin') {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./Dockerfile .")
                                 dockerImage.push()
                             }
@@ -106,16 +106,16 @@ def call(Map config, Map deployment) {
                     steps {
                         script {
                             sshagent(credentials: ['ssh_192_168_1_79']) {
-                                sh '''
+                                sh """
                                     [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
                                             docker login ${HARBOR_SERVER_IP} -uadmin -pleiyang1024.; \
-                                            docker pull ${HARBOR_SERVER_IP}/repository/im-user:latest; \
-                                            docker run -it --name ${deployment.APP_NAME} -p ${deployment.APP_PORT}:${deployment.APP_PORT} ${HARBOR_SERVER_IP}/repository/im-user:latest; \
+                                            docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
+                                            docker run -it --name ${deployment.APP_NAME} -p ${deployment.APP_PORT}:${deployment.APP_PORT} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                                         '\
-                                   '''
+                                   """
                             }
                         }
                     }
