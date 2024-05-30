@@ -71,18 +71,6 @@ def call(Map config, Map deployment) {
                         }
                     }
                 }
-//                stage('打包镜像') {
-//                    steps {
-//                        script {
-//                            sh "echo 'FROM ${DEFAULT_JDK_DOCKER_IMAGE}\n" +
-//                                    "VOLUME /tmp\n" +
-//                                    "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
-//                                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
-//                            sh "cat ./Dockerfile"
-//                            sh "docker build -t ly753/${deployment.APP_NAME}:latest -f ./Dockerfile ."
-//                        }
-//                    }
-//                }
 
                 stage('打包上传镜像') {
                     steps {
