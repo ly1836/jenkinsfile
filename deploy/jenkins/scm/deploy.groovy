@@ -85,7 +85,7 @@ def call(Map config, Map deployment) {
                                     "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
                             sh "cat ./Dockerfile"
                             docker.withRegistry('', 'dockerhub_ly753') {
-                                def dockerImage = docker.build("ly753/${deployment.APP_NAME}:latest", "-f ./Dockerfile .")
+                                def dockerImage = docker.build("ly753/repository/${deployment.APP_NAME}:latest", "-f ./Dockerfile .")
                                 dockerImage.psuh()
                             }
 
