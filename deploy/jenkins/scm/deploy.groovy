@@ -102,10 +102,12 @@ def call(Map config, Map deployment) {
                     steps {
                         script {
                             sshagent(credentials: ['ssh_192_168_1_98']) {
-                                sh """ssh -tt root@192.168.1.98 << EOF 
+                                sh '''
+                                    [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
+                                    ssh-keyscan -t rsa,dsa 192.168.1.98 >> ~/.ssh/known_hosts
+                                    ssh root@192.168.1.98
                                     pwd
-                                    exit
-                                    EOF"""
+                                   '''
                             }
                         }
                     }
