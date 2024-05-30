@@ -87,7 +87,7 @@ def call(Map config, Map deployment) {
                             sh "cat ./Dockerfile"
                             docker.withRegistry('', 'dockerhub_ly753') {
 
-                                def dockerImage = docker.build(${IMAGE_NAME}, "-f ./Dockerfile .")
+                                def dockerImage = docker.build("${IMAGE_NAME}", "-f ./Dockerfile .")
                                 dockerImage.push()
                                 sh "docker rmi ${IMAGE_NAME}"
                             }
