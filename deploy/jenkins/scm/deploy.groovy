@@ -94,6 +94,18 @@ def call(Map config, Map deployment) {
                     }
                 }
             }
+            stage('远程服务器部署') {
+                steps {
+                    script {
+                        sshagent(credentials : ['ssh_192_168_1_98']) {
+                            sh "pwd"
+                            sh "ls -l"
+                        }
+                    }
+                }
+            }
+        }
+
 
             post {
                 always {
