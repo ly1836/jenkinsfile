@@ -12,6 +12,10 @@ def call(Map config, Map deployment) {
                 DEFAULT_JAVA_HOME = "/usr/local/java/jdk1.8.0_281"
                 // 默认maven
                 DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
+                // 远程服务器IP
+                REMOTE_SERVER_IP = "192.168.1.79"
+                // Harbor镜像仓库地址
+                HARBOR_SERVER_IP = "192.168.1.98"
             }
             parameters {
                 // 发布环境
@@ -88,7 +92,7 @@ def call(Map config, Map deployment) {
                                     "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
                                     "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
                             sh "cat ./Dockerfile"
-                            docker.withRegistry('http://192.168.1.98/repository', 'harbor_admin') {
+                            docker.withRegistry('http://${HARBOR_SERVER_IP}/repository', 'harbor_admin') {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./Dockerfile .")
                                 dockerImage.push()
                             }
@@ -104,11 +108,12 @@ def call(Map config, Map deployment) {
                             sshagent(credentials: ['ssh_192_168_1_98']) {
                                 sh '''
                                     [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
-                                    ssh-keyscan -t rsa,dsa 192.168.1.98 >> ~/.ssh/known_hosts
-                                    ssh root@192.168.1.98 -o StrictHostKeyChecking=no -t \
+                                    ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
+                                    ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
-                                            pwd; \
-                                            ls -l;\
+                                            docker login ${HARBOR_SERVER_IP} -uadmin -pleiyang1024.; \
+                                            docker pull ${HARBOR_SERVER_IP}/repository/im-user:latest; \
+                                            docker run -it --name ${deployment.APP_NAME} -p ${deployment.APP_PORT}:${deployment.APP_PORT} ${HARBOR_SERVER_IP}/repository/im-user:latest; \
                                         '\
                                    '''
                             }
