@@ -41,12 +41,14 @@ def call(Map config, Map deployment) {
                         }
                     }
                 }
+
                 stage("拉取git仓库代码") {
                     steps {
                         echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
                         git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
                     }
                 }
+
                 stage("编译Maven工程") {
                     steps {
                         script {
@@ -77,6 +79,7 @@ def call(Map config, Map deployment) {
 //                        }
 //                    }
 //                }
+
                 stage('打包上传镜像') {
                     steps {
                         script {
@@ -94,19 +97,19 @@ def call(Map config, Map deployment) {
                         }
                     }
                 }
-            }
-            stage('远程服务器部署') {
-                steps {
-                    script {
-                        sshagent(credentials : ['ssh_192_168_1_98']) {
-                            sh "pwd"
-                            sh "ls -l"
+
+                stage('远程服务器部署') {
+                    steps {
+                        script {
+                            sshagent(credentials: ['ssh_192_168_1_98']) {
+                                sh "pwd"
+                                sh "ls -l"
+                            }
                         }
                     }
                 }
-            }
-        }
 
+            }
 
             post {
                 always {
