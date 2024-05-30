@@ -105,7 +105,7 @@ def call(Map config, Map deployment) {
                 stage('远程服务器部署') {
                     steps {
                         script {
-                            sshagent(credentials: ['ssh_192_168_1_98']) {
+                            sshagent(credentials: ['ssh_192_168_1_79']) {
                                 sh '''
                                     [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
