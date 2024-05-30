@@ -105,8 +105,7 @@ def call(Map config, Map deployment) {
                                 sh '''
                                     [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                                     ssh-keyscan -t rsa,dsa 192.168.1.98 >> ~/.ssh/known_hosts
-                                    ssh root@192.168.1.98
-                                    pwd
+                                    ssh root@192.168.1.98 pwd
                                    '''
                             }
                         }
