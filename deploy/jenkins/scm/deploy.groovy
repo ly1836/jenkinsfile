@@ -102,8 +102,10 @@ def call(Map config, Map deployment) {
                     steps {
                         script {
                             sshagent(credentials: ['ssh_192_168_1_98']) {
-                                sh "pwd"
-                                sh "ls -l"
+                                sh """ssh -tt root@192.168.1.98 << EOF 
+                                    pwd
+                                    exit
+                                    EOF"""
                             }
                         }
                     }
