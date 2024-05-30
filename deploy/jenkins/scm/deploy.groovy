@@ -86,12 +86,11 @@ def call(Map config, Map deployment) {
                                     "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
                             sh "cat ./Dockerfile"
                             docker.withRegistry('', 'dockerhub_ly753') {
-
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./Dockerfile .")
                                 dockerImage.push()
-//                                sh "docker rmi ${IMAGE_NAME}"
                             }
 
+                            sh "docker rmi ${IMAGE_NAME}"
                         }
                     }
                 }
