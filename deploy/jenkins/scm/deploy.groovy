@@ -16,6 +16,10 @@ def call(Map config, Map deployment) {
                 REMOTE_SERVER_IP = "192.168.1.79"
                 // Harbor镜像仓库地址
                 HARBOR_SERVER_IP = "192.168.1.98"
+                // Harbor用户名
+                HARBOR_USER_NAME = "admin"
+                // Harbor密码
+                HARBOR_PASSWORD = "leiyang1024."
             }
             parameters {
                 // 发布环境
@@ -80,10 +84,12 @@ def call(Map config, Map deployment) {
                                     "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
                                     "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
                             sh "cat ./Dockerfile"
-                            docker.withRegistry("http://${HARBOR_SERVER_IP}/repository", 'harbor_admin') {
+                            /*docker.withRegistry("http://${HARBOR_SERVER_IP}/repository", 'harbor_admin') {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./Dockerfile .")
                                 dockerImage.push()
-                            }
+                            }*/
+                            sh "docker login ${HARBOR_SERVER_IP} -u root -p leiyang1024."
+                            sh "docker build -t ${IMAGE_NAME} -f ./Dockerfile ."
                             sh "docker rmi ${IMAGE_NAME}"
                             echo "删除镜像：${IMAGE_NAME}"
                         }
