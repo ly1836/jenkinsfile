@@ -19,7 +19,7 @@ def call(Map config, Map deployment) {
                 // Harbor用户名
                 HARBOR_USER_NAME = "admin"
                 // Harbor密码
-                HARBOR_PASSWORD = "leiyang1024."
+                HARBOR_PASSWORD = "admin"
             }
             parameters {
                 // 发布环境
@@ -88,7 +88,7 @@ def call(Map config, Map deployment) {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./Dockerfile .")
                                 dockerImage.push()
                             }*/
-                            sh "docker login ${HARBOR_SERVER_IP} -u admin -p leiyang1024."
+                            sh "docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}"
                             sh "docker build -t ${IMAGE_NAME} -f ./Dockerfile ."
                             sh "docker rmi ${IMAGE_NAME}"
                             echo "删除镜像：${IMAGE_NAME}"
@@ -105,7 +105,7 @@ def call(Map config, Map deployment) {
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
-                                            docker login ${HARBOR_SERVER_IP} -uadmin -pleiyang1024.; \
+                                            docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}; \
                                             docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                                             docker run -it --name ${deployment.APP_NAME} -p ${deployment.APP_PORT}:${deployment.APP_PORT} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                                         '\
