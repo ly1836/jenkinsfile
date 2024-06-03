@@ -88,7 +88,7 @@ def call(Map config, Map deployment) {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./Dockerfile .")
                                 dockerImage.push()
                             }*/
-                            sh "docker login ${HARBOR_SERVER_IP} -u root -p leiyang1024."
+                            sh "docker login ${HARBOR_SERVER_IP} -u admin -p leiyang1024."
                             sh "docker build -t ${IMAGE_NAME} -f ./Dockerfile ."
                             sh "docker rmi ${IMAGE_NAME}"
                             echo "删除镜像：${IMAGE_NAME}"
