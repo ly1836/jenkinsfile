@@ -50,8 +50,6 @@ def call(Map config, Map deployment) {
                             echo "端口: ${deployment.APP_PORT}"
                             echo "构建类型：${config.TYPE}"
                             echo "发布环境：${PROFILE}"
-                            sh "pwd"
-                            sh "ls -l"
                         }
                     }
                 }
@@ -63,6 +61,8 @@ def call(Map config, Map deployment) {
                     steps {
                         echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
                         git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
+                        sh "pwd"
+                        sh "ls -l"
                     }
                 }
 
