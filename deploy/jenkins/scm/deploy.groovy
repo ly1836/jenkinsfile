@@ -63,7 +63,7 @@ def call(Map config, Map deployment) {
                         //git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
 
                         checkout([
-                                $class: 'GitSCM',
+                                $class: 'Git',
                                 branches: [[name: "${BRANCH}"]],
                                 doGenerateSubmoduleConfigurations: false,
                                 extensions: [
