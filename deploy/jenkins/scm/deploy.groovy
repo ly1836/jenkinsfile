@@ -62,6 +62,7 @@ def call(Map config, Map deployment) {
                         dir('project-workspace') {
                             echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
                             git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
+                            sh "ls -l ../"
                         }
                     }
                 }
