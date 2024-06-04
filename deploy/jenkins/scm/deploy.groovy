@@ -127,7 +127,7 @@ def call(Map config, Map deployment) {
                                             docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
                                             docker stop ${deployment.APP_NAME}_old; \
                                             mkdir -p /home/logs/${deployment.APP_NAME}; \
-                                            docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} -v /etc/timezone:/etc/timezone -v /etc/localtime:/etc/localtime -v /logs:/home/logs/${deployment.APP_NAME} -e TZ=Asia/Shanghai --name ${deployment.APP_NAME} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
+                                            docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} -v /etc/localtime:/etc/localtime -v /logs:/home/logs/${deployment.APP_NAME} -e TZ=Asia/Shanghai --name ${deployment.APP_NAME} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                                             docker rm ${deployment.APP_NAME}_old; \
                                         '\
                                    """
