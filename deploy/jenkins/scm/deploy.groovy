@@ -108,7 +108,7 @@ def call(Map config, Map deployment) {
                                         '\
                                             docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}; \
                                             docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
-                                            docker run -it --name ${deployment.APP_NAME} -p ${deployment.APP_PORT}:${deployment.APP_PORT} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
+                                            docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} --name ${deployment.APP_NAME} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                                         '\
                                    """
                             }
