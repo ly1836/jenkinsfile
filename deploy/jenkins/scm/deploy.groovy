@@ -62,8 +62,7 @@ def call(Map config, Map deployment) {
                         echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
                         //git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
 
-                        checkout scmGit([
-                                $class: 'GitSCM',
+                        checkout scmGit(
                                 branches: [[name: "*/${BRANCH}"]],
                                 doGenerateSubmoduleConfigurations: false,
                                 extensions: [
@@ -71,7 +70,7 @@ def call(Map config, Map deployment) {
                                 ],
                                 submoduleCfg: [],
                                 userRemoteConfigs: [[credentialsId: "ly1836_github", url: "${deployment.GIT_URL}"]]
-                        ])
+                        )
 
                         sh "pwd"
                         sh "ls -l"
