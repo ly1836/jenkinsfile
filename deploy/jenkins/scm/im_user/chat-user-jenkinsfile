@@ -21,7 +21,7 @@ def deployment = [
 // 发布相关的个性化配置(无须修改)
 def config = [
         // 对应三个发布环境：开发、测试、生产
-        ENV_NAMES    : ["Development", "Test", "Production"],
+        ENV_NAMES    : ["Development", "Test", "Production", "CI"],
         "Development": [
                 BRANCH : "master",
                 PROFILE: "dev",
