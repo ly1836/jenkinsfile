@@ -34,6 +34,10 @@ def config = [
                 BRANCH : "master",
                 PROFILE: "prod"
         ],
+        "CI" : [
+                BRANCH : "master",
+                PROFILE: "ci"
+        ],
         // 当前脚本只针对：spring boot编译的可执行jar包
         TYPE         : "jar"
 ]
