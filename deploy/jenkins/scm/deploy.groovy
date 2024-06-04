@@ -64,7 +64,7 @@ def call(Map config, Map deployment) {
 
                         checkout([
                                 $class: 'GitSCM',
-                                branches: [[name: "*/${BRANCH}"]],
+                                branches: [[name: "origin/${BRANCH}"]],
                                 doGenerateSubmoduleConfigurations: false,
                                 extensions: [
                                         [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[[$class:'SparseCheckoutPath', path:'project/']]]
