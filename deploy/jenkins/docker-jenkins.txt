@@ -82,7 +82,10 @@ https://github.com/settings/tokens
 
 4.配置jenkins系统代理，方便拉取github代码
 
-
+5.jenkins使用宿主机的maven，且指定JDK版本，需要在maven的bin目录，找到./mvn脚本，加入以下代码：
+unset JAVA_HOME
+export JAVA_HOME="/usr/local/java/jdk1.8.0_281"
+echo Maven设置指定JDK版本: $JAVA_HOME
 
 #资料
 https://developer.aliyun.com/article/892646
