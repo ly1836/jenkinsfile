@@ -1,5 +1,6 @@
 
-mkdir -p /home/deploy/jenkins/
+mkdir -p /home/deploy/jenkins/data
+chown -R 1000 /home/deploy/jenkins/data
 cd /home/deploy/jenkins
 
 
@@ -7,22 +8,62 @@ cd /home/deploy/jenkins
 
 docker run -d \
 -p 8099:8080 -p 50099:50000 \
+-v /usr/bin/docker:/usr/bin/docker \
+-v /var/run/docker.sock:/var/run/docker.sock \
 -v /home/deploy/jenkins/data:/var/jenkins_home \
+-v /home/maven/apache-maven-3.8.1:/usr/local/maven/apache-maven-3.8.1 \
+-v /usr/local/java/jdk1.8.0_281:/usr/local/java/jdk1.8.0_281 \
 --name jenkins jenkins/jenkins:2.440.3-lts-jdk17
+#--name jenkins jenkins:2.60.3
 
+
+
+
+#---------------------------------------------------
+#容器内访问宿主机docker设置权限
+#1.以root用户进入容器
+docker exec -it --user root jenkins /bin/bash
+#2.docker登录证书问题
+mkdir -p /etc/docker
+echo '{"insecure-registries" : ["192.168.1.98","192.168.1.98:443"]}' > /etc/docker/daemon.json
+#3.修改文件主
+chown -R jenkins:jenkins /usr/bin/docker
+chown -R jenkins:jenkins /var/run/docker.sock
+chown -R jenkins:jenkins /etc/docker/daemon.json
+
+
+#---------------------------------------------------
+#安装必要插件
+#1.SSH Agent
+#2.docker-workflow
+
+#---------------------------------------------------
 #权限问题
-chown -R 1000 /home/deploy/jenkins/
+chown -R 1000 /home/deploy/jenkins/data
 docker restart jenkins
 
+#---------------------------------------------------
 #设置开机启动
 docker update --restart=always jenkins
 
-
+#====================下面是命令注释========================================
+#服务器端口8080：镜像端口8080
+-p 8099:8080 -p 50099:50000
+# jenkins容器与Docker守护进程通信， 如果jenkins容器需要实例化其他Docker容器，则该守护进程是必需的。
+-v /var/run/docker.sock:/var/run/docker.sock
+#数据保存目录
+-v /home/deploy/jenkins/data:/var/jenkins_home
+#挂载宿主机maven
+-v /home/maven/apache-maven-3.8.1:/usr/local/maven/apache-maven-3.8.1
+#挂载宿主机jdk
+-v /usr/local/java/jdk1.8.0_281:/usr/local/java/jdk1.8.0_281
 
 #---------------------------------------------------
 #安装插件：https://plugins.jenkins.io/branch-api/releases/
 #进入容器
 docker exec -it jenkins /bin/bash
+#以root用户进入容器
+docker exec -it --user root jenkins /bin/bash
 #安装插件
 jenkins-plugin-cli --plugins branch-api:2.1152.v6f101e97dd77
 
