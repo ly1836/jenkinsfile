@@ -94,7 +94,6 @@ def call(Map config, Map deployment) {
                         script {
                             sh "echo 'FROM ${DEFAULT_JDK_DOCKER_IMAGE}\n" +
                                     "ENV TimeZone=Asia/Shanghai\n" +
-                                    "RUN ln -snf /usr/share/zoneinfo/$TimeZone /etc/localtime && echo $TimeZone > /etc/timezone\n" +
                                     "VOLUME /tmp\n" +
                                     "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
                                     "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]\n " +
