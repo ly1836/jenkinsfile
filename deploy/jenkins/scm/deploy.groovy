@@ -93,8 +93,6 @@ def call(Map config, Map deployment) {
                     steps {
                         script {
                             sh "echo 'FROM ${DEFAULT_JDK_DOCKER_IMAGE}\n" +
-                                    "ENV TZ=Asia/Shanghai\n" +
-                                    "RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone\n" +
                                     "VOLUME /tmp\n" +
                                     "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
                                     "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]\n " +
@@ -128,7 +126,8 @@ def call(Map config, Map deployment) {
                                             docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                                             docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
                                             docker stop ${deployment.APP_NAME}_old; \
-                                            docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} --name ${deployment.APP_NAME} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
+                                            mkdir -p /home/logs/${deployment.APP_NAME}; \
+                                            docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} -v /etc/timezone:/etc/timezone -v /etc/localtime:/etc/localtime -v /logs:/home/logs/${deployment.APP_NAME} -e TZ=Asia/Shanghai --name ${deployment.APP_NAME} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                                             docker rm ${deployment.APP_NAME}_old; \
                                         '\
                                    """
