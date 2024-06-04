@@ -102,6 +102,7 @@ def call(Map config, Map deployment) {
                                     "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
                                     "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]\n " +
                                     "' > Dockerfile "*/
+                            sh "sed -i 's/\${DEFAULT_JDK_DOCKER_IMAGE}/${DEFAULT_JDK_DOCKER_IMAGE}/g' ./deploy/docker/jar/Dockerfile"
                             sh "cat ./deploy/docker/jar/Dockerfile"
                             docker.withRegistry("http://${HARBOR_SERVER_IP}", 'harbor_admin') {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
