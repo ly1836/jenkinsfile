@@ -24,12 +24,16 @@ def call(Map config, Map deployment) {
             parameters {
                 // 发布环境
                 choice(name: "ENV_NAME", choices: config.ENV_NAMES, description: "发布环境")
+                // 只更新jenkins配置但是不发布
+                choice(name: "REFRESH", choices: ["false", "true"], description: "是否只更新jenkins配置但是不发布")
             }
             stages {
                 stage('输出配置信息') {
+                    when {
+                        environment name: 'REFRESH', value: 'false'
+                    }
                     steps {
                         script {
-
                             env.PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
                             env.JAVA_HOME = DEFAULT_JAVA_HOME
@@ -51,6 +55,9 @@ def call(Map config, Map deployment) {
                 }
 
                 stage("拉取git仓库代码") {
+                    when {
+                        environment name: 'REFRESH', value: 'false'
+                    }
                     steps {
                         echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
                         git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
@@ -58,6 +65,9 @@ def call(Map config, Map deployment) {
                 }
 
                 stage("编译Maven工程") {
+                    when {
+                        environment name: 'REFRESH', value: 'false'
+                    }
                     steps {
                         script {
                             // https://www.jenkins.io/doc/pipeline/examples/
@@ -77,6 +87,9 @@ def call(Map config, Map deployment) {
                 }
 
                 stage('打包上传镜像') {
+                    when {
+                        environment name: 'REFRESH', value: 'false'
+                    }
                     steps {
                         script {
                             sh "echo 'FROM ${DEFAULT_JDK_DOCKER_IMAGE}\n" +
@@ -98,6 +111,9 @@ def call(Map config, Map deployment) {
                 }
 
                 stage('远程服务器部署') {
+                    when {
+                        environment name: 'REFRESH', value: 'false'
+                    }
                     steps {
                         script {
                             sshagent(credentials: ['ssh_192_168_1_79']) {
@@ -108,7 +124,10 @@ def call(Map config, Map deployment) {
                                         '\
                                             docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}; \
                                             docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
+                                            docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
+                                            docker stop ${deployment.APP_NAME}_old; \
                                             docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} --name ${deployment.APP_NAME} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
+                                            docker rm ${deployment.APP_NAME}_old; \
                                         '\
                                    """
                             }
