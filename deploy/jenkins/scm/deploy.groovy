@@ -60,18 +60,8 @@ def call(Map config, Map deployment) {
                     }
                     steps {
                         echo "git仓库地址: ${deployment.GIT_URL} 分支: ${BRANCH} PROFILE: ${PROFILE}"
-                        //git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
-
-                        checkout scmGit(
-                                branches: [[name: "*/${BRANCH}"]],
-                                doGenerateSubmoduleConfigurations: false,
-                                extensions: [
-                                        [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[[$class:'SparseCheckoutPath', path:'project/']]]
-                                ],
-                                submoduleCfg: [],
-                                userRemoteConfigs: [[credentialsId: "ly1836_github", url: "${deployment.GIT_URL}"]]
-                        )
-
+                        sh "mkdir -p ./project-workspace && cd ./project-workspace "
+                        git credentialsId: "ly1836_github", url: deployment.GIT_URL, branch: BRANCH
                         sh "pwd"
                         sh "ls -l"
                     }
