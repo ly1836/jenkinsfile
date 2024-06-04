@@ -98,7 +98,7 @@ def call(Map config, Map deployment) {
                     steps {
                         script {
                             sh "sed -i 's/\${DEFAULT_JDK_DOCKER_IMAGE}/${DEFAULT_JDK_DOCKER_IMAGE}/g' ./deploy/docker/jar/Dockerfile"
-                            sh "sed -i 's/\${deployment.FILE}/\"\'${deployment.FILE}\'\"/g' ./deploy/docker/jar/Dockerfile"
+                            sh "sed -i 's#\${deployment.FILE}#${deployment.FILE}#g' ./deploy/docker/jar/Dockerfile"
                             sh "sed -i 's/\${deployment.APP_NAME}/${deployment.APP_NAME}/g' ./deploy/docker/jar/Dockerfile"
                             sh "cat ./deploy/docker/jar/Dockerfile"
                             docker.withRegistry("http://${HARBOR_SERVER_IP}", 'harbor_admin') {
