@@ -82,14 +82,15 @@ def call(Map config, Map deployment) {
                             sh "echo 'FROM ${DEFAULT_JDK_DOCKER_IMAGE}\n" +
                                     "VOLUME /tmp\n" +
                                     "ADD ${deployment.FILE} ${deployment.APP_NAME}.jar\n" +
-                                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' > Dockerfile "
+                                    "ENTRYPOINT [\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/${deployment.APP_NAME}.jar\"]' \n" +
+                                    "> Dockerfile "
                             sh "cat ./Dockerfile"
                             docker.withRegistry("http://${HARBOR_SERVER_IP}", 'harbor_admin') {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./Dockerfile .")
                                 dockerImage.push()
                             }
-//                            sh "docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}"
-//                            sh "docker build -t ${IMAGE_NAME} -f ./Dockerfile ."
+                            /*sh "docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}"
+                            sh "docker build -t ${IMAGE_NAME} -f ./Dockerfile ."*/
                             sh "docker rmi ${IMAGE_NAME}"
                             echo "删除镜像：${IMAGE_NAME}"
                         }
