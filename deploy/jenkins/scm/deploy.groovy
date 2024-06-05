@@ -101,7 +101,7 @@ def call(Map config, Map deployment) {
                             sh "sed -i 's#\${deployment.FILE}#${deployment.FILE}#g' ./deploy/docker/jar/Dockerfile"
                             sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/docker/jar/Dockerfile"
                             sh "cat ./deploy/docker/jar/Dockerfile"
-                            docker.withRegistry("", 'harbor_admin') {
+                            docker.withRegistry("", 'dockerhub_ly753') {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
                                 dockerImage.push()
                             }
