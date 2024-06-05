@@ -120,10 +120,10 @@ def call(Map config, Map deployment) {
                             // docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD};
                             // docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME};
 
-                            sh "sed -i 's#\${IMAGE_NAME}#${IMAGE_NAME}#g' ./sh/deploy.sh"
-                            sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./sh/deploy.sh"
-                            sh "sed -i 's#\${deployment.APP_PORT}#${deployment.APP_PORT}#g' ./sh/deploy.sh"
-                            def text = readFile './sh/deploy.sh'
+                            sh "sed -i 's#\${IMAGE_NAME}#${IMAGE_NAME}#g' ./deploy/sh/deploy.sh"
+                            sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/sh/deploy.sh"
+                            sh "sed -i 's#\${deployment.APP_PORT}#${deployment.APP_PORT}#g' ./deploy/sh/deploy.sh"
+                            def text = readFile './deploy/sh/deploy.sh'
                             sh "echo ${text}"
 
                             sshagent(credentials: ['ssh_192_168_1_79']) {
