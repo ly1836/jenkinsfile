@@ -1,4 +1,4 @@
-#!/bin/sh
+##!/bin/sh
 
 if [[ "$(docker images ${IMAGE_NAME})" != "" ]];
   then
