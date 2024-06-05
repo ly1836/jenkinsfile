@@ -117,14 +117,15 @@ def call(Map config, Map deployment) {
                     }
                     steps {
                         script {
+                            // docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}; \
+                            // docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                             sshagent(credentials: ['ssh_192_168_1_79']) {
                                 sh """
                                     [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
-                                            docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}; \
-                                            docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
+                                            docker pull ${IMAGE_NAME}; \
                                             docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
                                             docker stop ${deployment.APP_NAME}_old; \
                                             mkdir -p /home/logs/${deployment.APP_NAME}; \
