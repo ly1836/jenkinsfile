@@ -124,7 +124,7 @@ def call(Map config, Map deployment) {
                             sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${deployment.APP_PORT}#${deployment.APP_PORT}#g' ./deploy/sh/deploy.sh"
                             def text = readFile './deploy/sh/deploy.sh'
-                            sh "echo ${text}"
+                            echo text
 
                             sshagent(credentials: ['ssh_192_168_1_79']) {
                                 sh """
