@@ -125,6 +125,7 @@ def call(Map config, Map deployment) {
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
+                                            docker rmi ${IMAGE_NAME}; \
                                             docker pull ${IMAGE_NAME}; \
                                             docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
                                             docker stop ${deployment.APP_NAME}_old; \
