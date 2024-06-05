@@ -17,4 +17,8 @@ fi
 
 mkdir -p /home/logs/${deployment.APP_NAME}
 docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} -v /etc/localtime:/etc/localtime -v /home/logs/${deployment.APP_NAME}:/logs -e TZ=Asia/Shanghai --name ${deployment.APP_NAME} ${IMAGE_NAME}
-docker rm ${deployment.APP_NAME}_old
+
+if [[ "$(docker ps -a | grep '${deployment.APP_NAME}_old')" != "" ]];
+  then
+    docker rm ${deployment.APP_NAME}_old
+fi
