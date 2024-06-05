@@ -129,8 +129,8 @@ def call(Map config, Map deployment) {
                                                 then \
                                                     docker rmi ${IMAGE_NAME}; \
                                             docker pull ${IMAGE_NAME}; \
-                                            if [[ "\$(docker inspect ${deployment.APP_NAME} 2> /dev/null | grep '"Name": "/${deployment.APP_NAME}"')" != "" ]]; 
-                                                then
+                                            if [[ "\$(docker inspect ${deployment.APP_NAME} 2> /dev/null | grep '"Name": "/${deployment.APP_NAME}"')" != "" ]];  \
+                                                then \
                                                     docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
                                                     docker stop ${deployment.APP_NAME}_old; \
                                             mkdir -p /home/logs/${deployment.APP_NAME}; \
