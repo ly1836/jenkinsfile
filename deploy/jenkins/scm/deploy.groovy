@@ -125,10 +125,14 @@ def call(Map config, Map deployment) {
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
-                                            docker rmi ${IMAGE_NAME}; \
+                                            if [[ "\$(docker images -q ${IMAGE_NAME} 2> /dev/null)" != "" ]]; \
+                                                then \
+                                                    docker rmi ${IMAGE_NAME}; \
                                             docker pull ${IMAGE_NAME}; \
-                                            docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
-                                            docker stop ${deployment.APP_NAME}_old; \
+                                            if [[ "\$(docker inspect [容器名] 2> /dev/null | grep '"Name": "/[容器名]"')" != "" ]]; 
+                                                then
+                                                    docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
+                                                    docker stop ${deployment.APP_NAME}_old; \
                                             mkdir -p /home/logs/${deployment.APP_NAME}; \
                                             docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} -v /etc/localtime:/etc/localtime -v /home/logs/${deployment.APP_NAME}:/logs -e TZ=Asia/Shanghai --name ${deployment.APP_NAME} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
                                             docker rm ${deployment.APP_NAME}_old; \
