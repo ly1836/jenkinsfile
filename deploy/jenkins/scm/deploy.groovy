@@ -43,7 +43,7 @@ def call(Map config, Map deployment) {
                             if (deployment.JDK_DOCKER_IMAGE != "") {
                                 DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
                             }
-                            env.IMAGE_NAME = "repository/${deployment.APP_NAME}:latest"
+                            env.IMAGE_NAME = "ly753/repository/${deployment.APP_NAME}:latest"
 
                             echo "默认JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
                             echo "应用: ${deployment.APP_NAME}"
@@ -101,7 +101,7 @@ def call(Map config, Map deployment) {
                             sh "sed -i 's#\${deployment.FILE}#${deployment.FILE}#g' ./deploy/docker/jar/Dockerfile"
                             sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/docker/jar/Dockerfile"
                             sh "cat ./deploy/docker/jar/Dockerfile"
-                            docker.withRegistry("http://${HARBOR_SERVER_IP}", 'harbor_admin') {
+                            docker.withRegistry("", 'harbor_admin') {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
                                 dockerImage.push()
                             }
