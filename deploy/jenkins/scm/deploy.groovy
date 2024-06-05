@@ -117,25 +117,22 @@ def call(Map config, Map deployment) {
                     }
                     steps {
                         script {
-                            // docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}; \
-                            // docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
+                            // docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD};
+                            // docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME};
+
+                            sh "sed -i 's#\${IMAGE_NAME}#${IMAGE_NAME}#g' ./sh/deploy.sh"
+                            sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./sh/deploy.sh"
+                            sh "sed -i 's#\${deployment.APP_PORT}#${deployment.APP_PORT}#g' ./sh/deploy.sh"
+                            def text = readFile './sh/deploy.sh'
+                            sh "echo ${text}"
+
                             sshagent(credentials: ['ssh_192_168_1_79']) {
                                 sh """
                                     [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
-                                            if [[ "\$(docker images -q ${IMAGE_NAME} 2> /dev/null)" != "" ]]; \
-                                                then \
-                                                    docker rmi ${IMAGE_NAME}; \
-                                            docker pull ${IMAGE_NAME}; \
-                                            if [[ "\$(docker inspect ${deployment.APP_NAME} 2> /dev/null | grep '"Name": "/${deployment.APP_NAME}"')" != "" ]];  \
-                                                then \
-                                                    docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}_old; \
-                                                    docker stop ${deployment.APP_NAME}_old; \
-                                            mkdir -p /home/logs/${deployment.APP_NAME}; \
-                                            docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} -v /etc/localtime:/etc/localtime -v /home/logs/${deployment.APP_NAME}:/logs -e TZ=Asia/Shanghai --name ${deployment.APP_NAME} ${HARBOR_SERVER_IP}/${IMAGE_NAME}; \
-                                            docker rm ${deployment.APP_NAME}_old; \
+                                            pwd; \
                                         '\
                                    """
                             }
