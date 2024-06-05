@@ -134,6 +134,7 @@ def call(Map config, Map deployment) {
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
+                                            pwd; \
                                             echo ${deploy_sh} > ./deploy.sh; \
                                             chomod +x ./deploy.sh; \
                                             ./deploy.sh; \
