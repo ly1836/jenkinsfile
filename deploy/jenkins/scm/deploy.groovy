@@ -110,7 +110,7 @@ def call(Map config, Map deployment) {
                                 def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
                                 dockerImage.push()
                             }*/
-                            sh "docker rmi ${IMAGE_NAME}"
+                            sh "docker rmi -f ${IMAGE_NAME}"
                             echo "删除镜像：${IMAGE_NAME}"
                         }
                     }

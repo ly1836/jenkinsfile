@@ -2,7 +2,7 @@
 
 if [[ "$(docker images ${IMAGE_NAME})" != "" ]];
   then
-    docker rmi ${IMAGE_NAME}
+    docker rmi -f ${IMAGE_NAME}
 fi
 
 docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}
@@ -20,5 +20,5 @@ docker run -d -p ${deployment.APP_PORT}:${deployment.APP_PORT} -v /etc/localtime
 
 if [[ "$(docker ps -a | grep ${deployment.APP_NAME}-old)" != "" ]];
   then
-    docker rm ${deployment.APP_NAME}-old
+    docker rm -f ${deployment.APP_NAME}-old
 fi
