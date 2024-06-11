@@ -144,7 +144,7 @@ def call(Map config, Map deployment) {
                                         '\
                                             pwd; \
                                             rm -f ./deploy.sh; \
-                                            echo ${deploy_sh} > ./deploy.sh; \
+                                            echo '${deploy_sh}' > ./deploy.sh; \
                                             
                                             
                                         '\
