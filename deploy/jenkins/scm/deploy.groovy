@@ -116,10 +116,10 @@ def call(Map config, Map deployment) {
                                     dockerImage.push()
                                 }
                             }else{
-                                /*docker.withRegistry("", 'dockerhub_ly753') {
+                                docker.withRegistry("", 'dockerhub_ly753') {
                                     def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
                                     dockerImage.push()
-                                }*/
+                                }
                             }
                             sh "docker rmi -f ${IMAGE_NAME}"
                             echo "删除镜像：${IMAGE_NAME}"
