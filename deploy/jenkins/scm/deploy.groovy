@@ -144,12 +144,13 @@ def call(Map config, Map deployment) {
                                         '\
                                             pwd; \
                                             rm -f ./deploy.sh; \
-                                            echo ${deploy_sh} > ./deploy.sh; \
                                             
+                                            scp ./deploy/sh/deploy.sh  root@${REMOTE_SERVER_IP}:~/
                                             
                                         '\
                                    """
                             }
+                            // echo ${deploy_sh} > ./deploy.sh; \
                             // chmod +x ./deploy.sh; \
                             //./deploy.sh; \
                         }
