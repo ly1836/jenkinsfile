@@ -131,7 +131,7 @@ def call(Map config, Map deployment) {
                             sh "sed -i 's#\${IMAGE_NAME}#${IMAGE_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${deployment.APP_PORT}#${deployment.APP_PORT}#g' ./deploy/sh/deploy.sh"
-                            def deploy_sh = readFile './deploy/sh/deploy.sh'
+                            String deploy_sh = readFile './deploy/sh/deploy.sh'
                             echo "============远程服务器部署脚本==================="
                             echo deploy_sh
                             echo "============远程服务器部署脚本==================="
@@ -144,7 +144,7 @@ def call(Map config, Map deployment) {
                                         '\
                                             pwd; \
                                             rm -f ./deploy.sh; \
-                                            echo '${deploy_sh}' > ./deploy.sh; \
+                                            echo ${deploy_sh} > ./deploy.sh; \
                                             
                                             
                                         '\
