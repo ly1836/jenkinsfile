@@ -144,7 +144,7 @@ def call(Map config, Map deployment) {
                                         '\
                                             pwd; \
                                             echo ${deploy_sh} > ./deploy.sh; \
-                                            chomod +x ./deploy.sh; \
+                                            chmod +x ./deploy.sh; \
                                             ./deploy.sh; \
                                         '\
                                    """
