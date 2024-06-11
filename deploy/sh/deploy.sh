@@ -17,8 +17,8 @@ fi
 if [[ $1 == "local_harbor" ]]
 then
   docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}
-else
-  docker login -u ${DOCKER_HUB_USER_NAME} -p ${DOCKER_HUB_PASSWORD}
+#else
+#  docker login -u ${DOCKER_HUB_USER_NAME} -p ${DOCKER_HUB_PASSWORD}
 fi
 docker pull ${IMAGE_NAME}
 
