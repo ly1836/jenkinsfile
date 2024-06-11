@@ -30,7 +30,7 @@ def call(Map config, Map deployment) {
                 // 只更新jenkins配置但是不发布
                 choice(name: "REFRESH", choices: ["false", "true"], description: "是否只更新jenkins配置但是不发布")
                 // 容器仓库类型
-                choice(name: "CONTAINER_TYPE", choices: ["local_harbor", "docker_hub"], description: "是否只更新jenkins配置但是不发布")
+                choice(name: "CONTAINER_TYPE", choices: ["local_harbor", "docker_hub"], description: "容器仓库类型")
             }
             stages {
                 stage('输出配置信息') {
