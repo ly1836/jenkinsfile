@@ -140,7 +140,7 @@ def call(Map config, Map deployment) {
                                 sh """
                                     [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                                     ssh-keyscan -t rsa,dsa ${REMOTE_SERVER_IP} >> ~/.ssh/known_hosts
-                                    scp ./deploy/sh/deploy.sh  root@${REMOTE_SERVER_IP}:~/
+                                    scp ./deploy/sh/deploy.sh root@${REMOTE_SERVER_IP}:~/
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
                                             pwd; \
