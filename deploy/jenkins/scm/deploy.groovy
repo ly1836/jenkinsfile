@@ -26,6 +26,8 @@ def call(Map config, Map deployment) {
                 choice(name: "ENV_NAME", choices: config.ENV_NAMES, description: "发布环境")
                 // 只更新jenkins配置但是不发布
                 choice(name: "REFRESH", choices: ["false", "true"], description: "是否只更新jenkins配置但是不发布")
+                // 容器仓库类型
+                choice(name: "CONTAINER_TYPE", choices: ["local_harbor", "docker_hub"], description: "是否只更新jenkins配置但是不发布")
             }
             stages {
                 stage('输出配置信息') {
@@ -36,15 +38,17 @@ def call(Map config, Map deployment) {
                         script {
                             env.PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
-                            env.JAVA_HOME = DEFAULT_JAVA_HOME
-                            env.MAVEN_HOME = DEFAULT_MAVEN_HOME
 
                             env.DEFAULT_JDK_DOCKER_IMAGE = DEFAULT_JDK_DOCKER_IMAGE
                             if (deployment.JDK_DOCKER_IMAGE != "") {
                                 DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
                             }
-                            env.IMAGE_NAME = "${HARBOR_SERVER_IP}/repository/${deployment.APP_NAME}:latest"
-                            //env.IMAGE_NAME = "ly753/${deployment.APP_NAME}:latest"
+
+                            if(CONTAINER_TYPE == "local_harbor"){
+                                env.IMAGE_NAME = "${HARBOR_SERVER_IP}/repository/${deployment.APP_NAME}:latest"
+                            }else{
+                                env.IMAGE_NAME = "ly753/${deployment.APP_NAME}:latest"
+                            }
 
                             echo "默认JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
                             echo "应用: ${deployment.APP_NAME}"
@@ -76,7 +80,7 @@ def call(Map config, Map deployment) {
                         script {
                             dir('project-workspace') {
                                 // https://www.jenkins.io/doc/pipeline/examples/
-                                withEnv(["JAVA_HOME=${JAVA_HOME}", "PATH+MAVEN=${MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
+                                withEnv(["JAVA_HOME=${DEFAULT_JAVA_HOME}", "PATH+MAVEN=${DEFAULT_MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
                                     echo "=================================================="
                                     sh "mvn -version"
                                     echo "=================================================="
@@ -102,14 +106,17 @@ def call(Map config, Map deployment) {
                             sh "sed -i 's#\${deployment.FILE}#${deployment.FILE}#g' ./deploy/docker/jar/Dockerfile"
                             sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/docker/jar/Dockerfile"
                             sh "cat ./deploy/docker/jar/Dockerfile"
-                            docker.withRegistry("http://${HARBOR_SERVER_IP}", 'harbor_admin') {
-                                def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
-                                dockerImage.push()
+                            if(CONTAINER_TYPE == "local_harbor"){
+                                docker.withRegistry("http://${HARBOR_SERVER_IP}", 'harbor_admin') {
+                                    def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
+                                    dockerImage.push()
+                                }
+                            }else{
+                                docker.withRegistry("", 'dockerhub_ly753') {
+                                    def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
+                                    dockerImage.push()
+                                }
                             }
-                            /*docker.withRegistry("", 'dockerhub_ly753') {
-                                def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
-                                dockerImage.push()
-                            }*/
                             sh "docker rmi -f ${IMAGE_NAME}"
                             echo "删除镜像：${IMAGE_NAME}"
                         }
@@ -122,9 +129,6 @@ def call(Map config, Map deployment) {
                     }
                     steps {
                         script {
-                            // docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD};
-                            // docker pull ${HARBOR_SERVER_IP}/${IMAGE_NAME};
-
                             sh "sed -i 's#\${HARBOR_SERVER_IP}#${HARBOR_SERVER_IP}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${HARBOR_USER_NAME}#${HARBOR_USER_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${HARBOR_PASSWORD}#${HARBOR_PASSWORD}#g' ./deploy/sh/deploy.sh"
