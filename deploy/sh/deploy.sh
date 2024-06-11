@@ -14,8 +14,14 @@ then
 fi
 
 # 3.拉取镜像
-docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}
-docker pull ${IMAGE_NAME}
+if [[ $1 == "local_harbor" ]]
+then
+  docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}
+  docker pull ${IMAGE_NAME}
+else
+  docker login -u ${DOCKER_HUB_USER_NAME} -p ${DOCKER_HUB_PASSWORD}
+  docker pull ${IMAGE_NAME}
+fi
 
 # 4.启动容器
 mkdir -p /home/logs/${deployment.APP_NAME}

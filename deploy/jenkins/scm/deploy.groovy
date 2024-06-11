@@ -20,6 +20,9 @@ def call(Map config, Map deployment) {
                 HARBOR_USER_NAME = "admin"
                 // Harbor密码
                 HARBOR_PASSWORD = "admin"
+                // docker hub
+                DOCKER_HUB_USER_NAME = "ly753"
+                DOCKER_HUB_PASSWORD = "leiyang1024."
             }
             parameters {
                 // 发布环境
@@ -133,6 +136,8 @@ def call(Map config, Map deployment) {
                             sh "sed -i 's#\${HARBOR_SERVER_IP}#${HARBOR_SERVER_IP}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${HARBOR_USER_NAME}#${HARBOR_USER_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${HARBOR_PASSWORD}#${HARBOR_PASSWORD}#g' ./deploy/sh/deploy.sh"
+                            sh "sed -i 's#\${DOCKER_HUB_USER_NAME}#${DOCKER_HUB_USER_NAME}#g' ./deploy/sh/deploy.sh"
+                            sh "sed -i 's#\${DOCKER_HUB_PASSWORD}#${DOCKER_HUB_PASSWORD}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${IMAGE_NAME}#${IMAGE_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${deployment.APP_PORT}#${deployment.APP_PORT}#g' ./deploy/sh/deploy.sh"
@@ -149,7 +154,7 @@ def call(Map config, Map deployment) {
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
                                             chmod +x ./deploy.sh; \
-                                            ./deploy.sh; \
+                                            ./deploy.sh ${CONTAINER_TYPE} ; \
                                             rm -f ./deploy.sh; \
                                         '\
                                    """
