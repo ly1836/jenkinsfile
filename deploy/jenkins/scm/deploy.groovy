@@ -154,7 +154,7 @@ def call(Map config, Map deployment) {
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
                                             chmod +x ./deploy.sh; \
-                                            ./deploy.sh ${CONTAINER_TYPE} ; \
+                                            ./deploy.sh; \
                                             rm -f ./deploy.sh; \
                                         '\
                                    """
