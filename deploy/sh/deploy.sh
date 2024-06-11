@@ -11,7 +11,7 @@ docker pull ${IMAGE_NAME}
 
 if [[ "$(docker ps -a | grep ${deployment.APP_NAME})" != "" ]];
 then
-  docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}-old
+  docker rename ${deployment.APP_NAME} ${deployment.APP_NAME}-old;
   docker stop ${deployment.APP_NAME}-old
 fi
 
