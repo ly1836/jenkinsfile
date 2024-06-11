@@ -143,7 +143,7 @@ def call(Map config, Map deployment) {
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
                                             pwd; \
-                                            echo """${deploy_sh}""" > ./deploy.sh; \
+                                            echo ${deploy_sh} > ./deploy.sh; \
                                             chmod +x ./deploy.sh; \
                                             
                                         '\
