@@ -144,13 +144,13 @@ def call(Map config, Map deployment) {
                                         '\
                                             pwd; \
                                             rm -f ./deploy.sh; \
+                                            echo ${deploy_sh} > ./deploy.sh; \
                                             
                                             
                                         '\
                                    """
                             }
-//                            echo ${deploy_sh} > ./deploy.sh; \
-//                                            chmod +x ./deploy.sh; \
+                            // chmod +x ./deploy.sh; \
                             //./deploy.sh; \
                         }
                     }
