@@ -55,6 +55,7 @@ def call(Map config, Map deployment) {
                             echo "端口: ${deployment.APP_PORT}"
                             echo "构建类型：${config.TYPE}"
                             echo "发布环境：${PROFILE}"
+                            echo "容器仓库类型：${CONTAINER_TYPE}"
                         }
                     }
                 }
