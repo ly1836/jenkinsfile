@@ -1,29 +1,30 @@
 #!/usr/bin/env groovy
 
 
-// docker仓库配置
-def dockerConfig = [
-        // 对应三个发布环境：开发、测试、生产
-        Registrys      : ["local_harbor", "docker_hub", "aliyun"],
-        "local_harbor": [
-                USER_NAME: "admin",
-                PASSWORD : "admin",
-                REGISTRY : "192.168.1.98"
-        ],
-        "docker_hub"  : [
-                USER_NAME : "",
-                PASSWORD: "",
-                REGISTRY : ""
-        ],
-        "aliyun"  : [
-                USER_NAME : "18674492943",
-                PASSWORD: "ly123456",
-                REGISTRY : "registry.cn-hangzhou.aliyuncs.com"
-        ]
-]
-
 def call(Map config, Map deployment) {
     echo "进入groovy脚本方法"
+
+    // docker仓库配置
+    def dockerConfig = [
+            // 对应三个发布环境：开发、测试、生产
+            Registrys      : ["local_harbor", "docker_hub", "aliyun"],
+            "local_harbor": [
+                    USER_NAME: "admin",
+                    PASSWORD : "admin",
+                    REGISTRY : "192.168.1.98"
+            ],
+            "docker_hub"  : [
+                    USER_NAME : "",
+                    PASSWORD: "",
+                    REGISTRY : ""
+            ],
+            "aliyun"  : [
+                    USER_NAME : "18674492943",
+                    PASSWORD: "ly123456",
+                    REGISTRY : "registry.cn-hangzhou.aliyuncs.com"
+            ]
+    ]
+
     if (config.TYPE == "jar") {
         pipeline {
             agent any
