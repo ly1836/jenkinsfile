@@ -74,7 +74,10 @@ def call(Map config, Map deployment) {
                                 DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
                             }
 
-                            def user = env.BUILD_USER_ID
+
+                            wrap([$class: 'BuildUser']) {
+                                def user = env.BUILD_USER_ID
+                            }
                             echo "默认JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
                             echo "应用: ${deployment.APP_NAME}"
                             echo "端口: ${deployment.APP_PORT}"
