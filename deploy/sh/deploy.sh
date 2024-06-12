@@ -14,9 +14,9 @@ then
 fi
 
 # 3.拉取镜像
-if [[ $1 == "local_harbor" ]]
+if [[ $1 == "local_harbor" ]] || [[ $1 == "aliyun" ]]
 then
-  docker login ${HARBOR_SERVER_IP} -u ${HARBOR_USER_NAME} -p ${HARBOR_PASSWORD}
+  docker login ${DOCKER_REGISTRY} -u ${DOCKER_USER_NAME} -p ${DOCKER_PASSWORD}
 fi
 docker pull ${IMAGE_NAME}
 

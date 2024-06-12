@@ -1,5 +1,27 @@
 #!/usr/bin/env groovy
 
+
+// docker仓库配置
+def dockerConfig = [
+        // 对应三个发布环境：开发、测试、生产
+        Registrys      : ["local_harbor", "docker_hub", "aliyun"],
+        "local_harbor": [
+                USER_NAME: "admin",
+                PASSWORD : "admin",
+                REGISTRY : "192.168.1.98"
+        ],
+        "docker_hub"  : [
+                USER_NAME : "",
+                PASSWORD: "",
+                REGISTRY : ""
+        ],
+        "aliyun"  : [
+                USER_NAME : "18674492943",
+                PASSWORD: "ly123456",
+                REGISTRY : "registry.cn-hangzhou.aliyuncs.com"
+        ]
+]
+
 def call(Map config, Map deployment) {
     echo "进入groovy脚本方法"
     if (config.TYPE == "jar") {
@@ -14,12 +36,6 @@ def call(Map config, Map deployment) {
                 DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
                 // 远程服务器IP
                 REMOTE_SERVER_IP = "192.168.1.79"
-                // Harbor镜像仓库地址
-                HARBOR_SERVER_IP = "192.168.1.98"
-                // Harbor用户名
-                HARBOR_USER_NAME = "admin"
-                // Harbor密码
-                HARBOR_PASSWORD = "admin"
             }
             parameters {
                 // 发布环境
@@ -27,7 +43,7 @@ def call(Map config, Map deployment) {
                 // 只更新jenkins配置但是不发布
                 choice(name: "REFRESH", choices: ["false", "true"], description: "是否只更新jenkins配置但是不发布")
                 // 容器仓库类型
-                choice(name: "CONTAINER_TYPE", choices: ["local_harbor", "docker_hub"], description: "容器仓库类型")
+                choice(name: "REGISTRY_TYPE", choices: dockerConfig.Registrys, description: "容器仓库类型")
             }
             stages {
                 stage('输出配置信息') {
@@ -39,15 +55,22 @@ def call(Map config, Map deployment) {
                             env.PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
 
+                            // docker配置
+                            env.DOCKER_REGISTRY = dockerConfig["${REGISTRY_TYPE}"].REGISTRY
+                            env.DOCKER_USER_NAME = dockerConfig["${REGISTRY_TYPE}"].USER_NAME
+                            env.DOCKER_PASSWORD = dockerConfig["${REGISTRY_TYPE}"].PASSWORD
+                            if (REGISTRY_TYPE == "local_harbor") {
+                                env.IMAGE_NAME = "${DOCKER_REGISTRY}/repository/${deployment.APP_NAME}:latest"
+                            }else if(REGISTRY_TYPE == "aliyun"){
+                                env.IMAGE_NAME = "${DOCKER_REGISTRY}/aliyun_name_space_ly/${deployment.APP_NAME}:latest"
+                            } else {
+                                env.IMAGE_NAME = "ly753/${deployment.APP_NAME}:latest"
+                            }
+
+                            // 默认jdk镜像
                             env.DEFAULT_JDK_DOCKER_IMAGE = DEFAULT_JDK_DOCKER_IMAGE
                             if (deployment.JDK_DOCKER_IMAGE != "") {
                                 DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
-                            }
-
-                            if(CONTAINER_TYPE == "local_harbor"){
-                                env.IMAGE_NAME = "${HARBOR_SERVER_IP}/repository/${deployment.APP_NAME}:latest"
-                            }else{
-                                env.IMAGE_NAME = "ly753/${deployment.APP_NAME}:latest"
                             }
 
                             echo "默认JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
@@ -55,7 +78,7 @@ def call(Map config, Map deployment) {
                             echo "端口: ${deployment.APP_PORT}"
                             echo "构建类型：${config.TYPE}"
                             echo "发布环境：${PROFILE}"
-                            echo "容器仓库类型：${CONTAINER_TYPE}"
+                            echo "容器仓库类型：${REGISTRY_TYPE}"
                         }
                     }
                 }
@@ -107,12 +130,17 @@ def call(Map config, Map deployment) {
                             sh "sed -i 's#\${deployment.FILE}#${deployment.FILE}#g' ./deploy/docker/jar/Dockerfile"
                             sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/docker/jar/Dockerfile"
                             sh "cat ./deploy/docker/jar/Dockerfile"
-                            if(CONTAINER_TYPE == "local_harbor"){
-                                docker.withRegistry("http://${HARBOR_SERVER_IP}", 'harbor_admin') {
+                            if (REGISTRY_TYPE == "local_harbor") {
+                                docker.withRegistry("http://${DOCKER_REGISTRY}", 'harbor_admin') {
                                     def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
                                     dockerImage.push()
                                 }
-                            }else{
+                            }else if(REGISTRY_TYPE == "aliyun"){
+                                docker.withRegistry("http://${DOCKER_REGISTRY}", 'aliyun_docker_18674492943') {
+                                    def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
+                                    dockerImage.push()
+                                }
+                            } else {
                                 docker.withRegistry("", 'dockerhub_ly753') {
                                     def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
                                     dockerImage.push()
@@ -130,9 +158,9 @@ def call(Map config, Map deployment) {
                     }
                     steps {
                         script {
-                            sh "sed -i 's#\${HARBOR_SERVER_IP}#${HARBOR_SERVER_IP}#g' ./deploy/sh/deploy.sh"
-                            sh "sed -i 's#\${HARBOR_USER_NAME}#${HARBOR_USER_NAME}#g' ./deploy/sh/deploy.sh"
-                            sh "sed -i 's#\${HARBOR_PASSWORD}#${HARBOR_PASSWORD}#g' ./deploy/sh/deploy.sh"
+                            sh "sed -i 's#\${DOCKER_REGISTRY}#${DOCKER_REGISTRY}#g' ./deploy/sh/deploy.sh"
+                            sh "sed -i 's#\${DOCKER_USER_NAME}#${DOCKER_USER_NAME}#g' ./deploy/sh/deploy.sh"
+                            sh "sed -i 's#\${DOCKER_PASSWORD}#${DOCKER_PASSWORD}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${IMAGE_NAME}#${IMAGE_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${deployment.APP_NAME}#${deployment.APP_NAME}#g' ./deploy/sh/deploy.sh"
                             sh "sed -i 's#\${deployment.APP_PORT}#${deployment.APP_PORT}#g' ./deploy/sh/deploy.sh"
@@ -149,7 +177,7 @@ def call(Map config, Map deployment) {
                                     ssh root@${REMOTE_SERVER_IP} -o StrictHostKeyChecking=no -t \
                                         '\
                                             chmod +x ./deploy.sh; \
-                                            ./deploy.sh ${CONTAINER_TYPE} ; \
+                                            ./deploy.sh ${REGISTRY_TYPE} ; \
                                             rm -f ./deploy.sh; \
                                         '\
                                    """
