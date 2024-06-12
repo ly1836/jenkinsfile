@@ -36,6 +36,7 @@ chown -R jenkins:jenkins /etc/docker/daemon.json
 #安装必要插件
 #1.SSH Agent
 #2.docker-workflow
+#3.build-user-vars-plugin
 
 #---------------------------------------------------
 #权限问题
