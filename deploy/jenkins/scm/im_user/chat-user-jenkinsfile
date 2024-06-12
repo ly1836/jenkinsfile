@@ -41,7 +41,7 @@ def config = [
 
 //echo "调用groovy脚本方法"
 node {
-    dir('anyName'){
+    dir('deploy-work'){
         checkout scm: [$class: 'GitSCM', branches: [[name: '*/master']],
                        userRemoteConfigs: [[credentialsId: 'ly1836_github', url: 'https://github.com/ly1836/jenkinsfile.git']]
         ]
