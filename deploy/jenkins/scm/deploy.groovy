@@ -80,6 +80,7 @@ def call(Map config, Map deployment) {
                             echo "构建类型：${config.TYPE}"
                             echo "发布环境：${PROFILE}"
                             echo "容器仓库类型：${REGISTRY_TYPE}"
+                            echo "构建者：${BUILD_USER_ID}"
                         }
                     }
                 }
