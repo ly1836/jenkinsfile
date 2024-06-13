@@ -130,7 +130,7 @@ def call(Map config, Map deployment) {
                         script {
                             dir('project-workspace') {
                                 // https://www.jenkins.io/doc/pipeline/examples/
-                                withEnv(["JAVA_HOME=${DEFAULT_JAVA_HOME}", "PATH+MAVEN=${DEFAULT_MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
+                                /*withEnv(["JAVA_HOME=${DEFAULT_JAVA_HOME}", "PATH+MAVEN=${DEFAULT_MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
                                     echo "=================================================="
                                     sh "mvn -version"
                                     echo "=================================================="
@@ -140,7 +140,10 @@ def call(Map config, Map deployment) {
                                         // https://www.jianshu.com/p/25aff2bf6e56
                                         sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
                                     }
-                                }
+                                }*/
+                                echo "=================================================="
+                                sh "mvn -version"
+                                echo "=================================================="
                             }
                         }
                     }
