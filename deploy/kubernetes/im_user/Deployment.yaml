@@ -1,0 +1,207 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: im-user-v1 # 灰度发布的情况下建议增加版本号  im-user-v1
+  namespace: test
+  labels:
+    version: v1
+    app: im-user
+    app.kubernetes.io/version: DEFAULT
+    app.kubernetes.io/name: im-user
+  annotations:
+    servicemesh.kubesphere.io/enabled: 'false' # 开启服务治理
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate # 滚动更新
+    rollingUpdate:
+      maxUnavailable: 25% # 最大不可用容器组数量
+      maxSurge: 33% # 最大多余容器组数量
+  selector: # 按版本号匹配pod
+    matchLabels:
+      version: v1
+      app: im-user
+      app.kubernetes.io/version: DEFAULT
+      app.kubernetes.io/name: im-user
+  template:
+    metadata:
+      labels:
+        version: v1
+        app: im-user
+        language: java
+        app.kubernetes.io/version: DEFAULT
+        app.kubernetes.io/name: im-user
+      annotations:
+#        prometheus.io/scrape: 'true'
+#        prometheus.io/path: /actuator/prometheus
+#        prometheus.io/port: '12089'
+        sidecar.istio.io/inject: 'false'
+    spec:
+      terminationGracePeriodSeconds: 120
+      affinity:
+        nodeAffinity: # 节点亲和度
+          requiredDuringSchedulingIgnoredDuringExecution: # 必须部署到标签 namespace: {{cluster.space}} 的节点
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: namespace
+                    operator: In
+                    values:
+                      - test
+          preferredDuringSchedulingIgnoredDuringExecution: # 尽量部署到标签 app-type: im-user 的节点上
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: app-type
+                    operator: In
+                    values:
+                      - im-user
+#        podAntiAffinity: # pod反亲和度
+#          preferredDuringSchedulingIgnoredDuringExecution:
+#            - weight: 1 # 尽量分散部署
+#              podAffinityTerm:
+#                labelSelector:
+#                  matchLabels:
+#                    app: im-user
+#                    app.kubernetes.io/name: im-user
+#                    app.kubernetes.io/version: DEFAULT
+#                    version: v1
+#                topologyKey: kubernetes.io/hostname
+      tolerations: # 容忍度: app-type: im-user
+        - key: app-type
+          value: im-user
+          effect: NoSchedule
+          operator: Equal
+        - key: namespace # 容忍度 namespace: {{cluster.space}}
+          value: test
+          effect: NoSchedule
+          operator: Equal
+#      initContainers:
+#        - name: arthas-container
+#          image: ustc-edu-cn.mirror.aliyuncs.com/hengyunabc/arthas:latest
+#          imagePullPolicy: IfNotPresent
+#          volumeMounts:
+#            - name: arthas-volume
+#              mountPath: /arthas
+#          command: [ "/bin/sh" ]
+#          args: [ "-c", "cp -R /opt/arthas / && ls -l /" ]
+#        - name: jprofiler-container
+#          image: harbor.yj2025.com/library/jprofiler-agent:v12.0.4
+#          imagePullPolicy: IfNotPresent
+#          volumeMounts:
+#            - name: jprofiler-volume
+#              mountPath: /agent/jprofiler
+#          command: [ "/bin/sh" ]
+#          args: [ "-c", "cp -R /jprofiler /agent && ls -l /agent" ]
+      containers:
+        - name: im-user
+          image: registry.cn-hangzhou.aliyuncs.com/aliyun_name_space_ly/im-user:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: endpoint
+              containerPort: 12089
+              protocol: TCP
+            - name: jprofile
+              containerPort: 8849
+              protocol: TCP
+#          volumeMounts:
+#            - mountPath: /data/public
+#              name: public-storage
+#            - mountPath: /data/java/logs
+#              name: data-java-volume
+#            - mountPath: /tmp
+#              name: tmp-volume
+#            - name: arthas-volume
+#              mountPath: /arthas
+#            - name: jprofiler-volume
+#              mountPath: /jprofiler
+          env:
+            - name: UPDATE_TIME
+              value: "{{build.time}}"
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: JDK_JAVA_OPTIONS
+              value: |
+                --add-exports=java.base/sun.nio.ch=ALL-UNNAMED
+                --add-opens=java.base/java.lang=ALL-UNNAMED
+                --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+                --add-opens=java.base/java.io=ALL-UNNAMED
+                --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED
+          command: [ "/tini", "--"]
+#          args:
+#            - java
+#            - -agentpath:/jprofiler/bin/linux-x64/libjprofilerti.so=port=8849,nowait
+#            - -Dlog4j2.formatMsgNoLookups=true
+#            - -Djava.security.egd=file:/dev/./urandom
+#            - -XX:+HeapDumpOnOutOfMemoryError
+#            - -XX:HeapDumpPath=/data/public/dump/
+#            - -server
+#            - -Xms256M # 初始堆大小
+#            - -Xmx3000M # 最大堆大小
+#             - -Xss2m # 每个线程的堆栈大小
+#            - -XX:+UseG1GC # 使用G1收集器
+#            - -XX:MaxMetaspaceSize=512M
+#            - -XX:MetaspaceSize=256M
+#            - -XX:+UnlockDiagnosticVMOptions # 开启诊断 支持的命令列表：jcmd PID help
+#            - -XX:+UnlockExperimentalVMOptions # 开启实验性功能
+#            - -XX:+UseNUMA # 非一致性内存访问 https://draveness.me/whys-the-design-numa-performance/
+#            - -XX:+ClassUnloadingWithConcurrentMark # https://www.6aiq.com/article/1537687882599
+#            - -XX:+G1UseAdaptiveIHOP
+#            - -XX:+UseCompressedOops # 开启普通对象指针压缩 压缩对象Klass pointer 减少运行内存 减少gc耗时
+#            - -XX:+UseCompressedClassPointers
+#            - -Xloggc:/data/logs/gc.log # 将每次GC事件的相关情况记录到文件中
+#            - -XX:+PrintGCDetails # 打印详细的GC日志
+#            - -XX:+PrintGCTimeStamps # 打印每次GC的时间戳
+#            - -XX:+UseLargePages # 使用透明大页面
+#            - -Dcom.sun.management.jmxremote=true
+#            - -Dcom.sun.management.jmxremote.port=8999
+#            - -Dcom.sun.management.jmxremote.rmi.port=8999
+#            - -Dcom.sun.management.jmxremote.ssl=false
+#            - -Dcom.sun.management.jmxremote.authenticate=false
+#            - -jar
+#            - /data/java/{{build.file.name}}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/bin/sh", "-c", "sleep 30 && curl -H \"Content-Type:application/json\" -X POST http://localhost:12089/actuator/service-registry?status=DOWN && sleep 30" ]
+          startupProbe: # 容器启动检查，指示容器中的应用是否已经启动.
+            tcpSocket:
+              port: 12089
+            initialDelaySeconds: 60 # 容器启动60s后启动第一次探测
+            periodSeconds: 10 # 每隔10s启动一次探测
+            timeoutSeconds: 10 # 每次等待超时时间10s
+            failureThreshold: 30 # 连续30次失败，则判定容器不健康
+          livenessProbe: # 存活性检查，用于判断容器是否健康.
+            tcpSocket:
+              port: 12089
+            initialDelaySeconds: 60 # 容器启动60s后启动第一次探测
+            periodSeconds: 10 # 每隔10s启动一次探测
+            timeoutSeconds: 10 # 每次等待超时时间10s
+            failureThreshold: 30 # 连续30次失败，则判定容器不健康
+          readinessProbe: # 就绪性检查，用于判断容器是否启动完成且准备接收请求.
+            tcpSocket:
+              port: 12089
+            initialDelaySeconds: 60 # 容器启动60s后启动第一次探测
+            periodSeconds: 10 # 每隔10s启动一次探测
+            timeoutSeconds: 10 # 每次等待超时时间10s
+            failureThreshold: 30 # 连续30次失败，则判定容器不健康
+#          resources:
+#            requests:
+#              memory: 768Mi
+#            limits:
+#              memory: 4096Mi
+      imagePullSecrets:
+        - name: aliyun-acr
+#      volumes:
+#        - name: public-storage
+#          persistentVolumeClaim:
+#            claimName: public-storage-mlf-dev-claim
+#        - name: data-java-volume
+#          emptyDir: {}
+#        - name: tmp-volume
+#          emptyDir: {}
+#        - name: arthas-volume
+#          emptyDir: {}
+#        - name: jprofiler-volume
+#          emptyDir: {}
