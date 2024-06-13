@@ -33,8 +33,10 @@ def call(Map config, Map deployment) {
                 DEFAULT_JDK_DOCKER_IMAGE = "openjdk:8"
                 // 默认jdk
                 DEFAULT_JAVA_HOME = "/usr/local/java/jdk1.8.0_281"
+//                DEFAULT_JAVA_HOME = tool name: ''
                 // 默认maven
-                DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
+//                DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
+                DEFAULT_JAVA_HOME = tool name: 'maven-jenkins-3_8_1'
                 // 远程服务器IP
                 REMOTE_SERVER_IP = "192.168.1.79"
             }
@@ -130,7 +132,7 @@ def call(Map config, Map deployment) {
                         script {
                             dir('project-workspace') {
                                 // https://www.jenkins.io/doc/pipeline/examples/
-                                /*withEnv(["JAVA_HOME=${DEFAULT_JAVA_HOME}", "PATH+MAVEN=${DEFAULT_MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
+                                withEnv(["JAVA_HOME=${DEFAULT_JAVA_HOME}", "PATH+MAVEN=${DEFAULT_MAVEN_HOME}/bin:${JAVA_HOME}/bin"]) {
                                     echo "=================================================="
                                     sh "mvn -version"
                                     echo "=================================================="
@@ -140,10 +142,7 @@ def call(Map config, Map deployment) {
                                         // https://www.jianshu.com/p/25aff2bf6e56
                                         sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
                                     }
-                                }*/
-                                echo "=================================================="
-                                sh "mvn -version"
-                                echo "=================================================="
+                                }
                             }
                         }
                     }
