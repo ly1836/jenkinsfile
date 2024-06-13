@@ -36,7 +36,7 @@ def call(Map config, Map deployment) {
 //                DEFAULT_JAVA_HOME = tool name: ''
                 // 默认maven
 //                DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
-                DEFAULT_JAVA_HOME = tool name: 'maven-jenkins-3_8_1'
+                DEFAULT_MAVEN_HOME = tool name: 'maven-jenkins-3_8_1'
                 // 远程服务器IP
                 REMOTE_SERVER_IP = "192.168.1.79"
             }
