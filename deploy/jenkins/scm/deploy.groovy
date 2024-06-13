@@ -82,15 +82,18 @@ def call(Map config, Map deployment) {
 
                             // 生产环境发布权限判断
                             env.PERMISSIONS = true
-                            String[] masterUser = new File("./deploy/jenkins/master-user.txt")
-                            boolean exist = false
-                            masterUser.each { item ->
-                                echo "master权限用户：${item}"
-                                if(item == BUILD_USER_ID){
-                                    exist = true;
+                            if(ENV_NAME == "production"){
+                                def masterUsers = readFile "./deploy/jenkins/master-user.txt"
+                                def lines = masterUsers.readLines()
+                                boolean exist = false
+                                for (line in lines) {
+                                    echo "master权限用户：${line}"
+                                    if(line == BUILD_USER_ID){
+                                        exist = true;
+                                    }
                                 }
+                                env.PERMISSIONS = exist
                             }
-                            env.PERMISSIONS = exist
 
                             echo "默认JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
                             echo "应用: ${deployment.APP_NAME}"
@@ -99,7 +102,7 @@ def call(Map config, Map deployment) {
                             echo "发布环境：${PROFILE}"
                             echo "容器仓库类型：${REGISTRY_TYPE}"
                             echo "构建者：${BUILD_USER_ID}"
-                            echo "是否有发布master权限：${PERMISSIONS}"
+                            echo "是否有发布权限：${PERMISSIONS}"
                         }
                     }
                 }
