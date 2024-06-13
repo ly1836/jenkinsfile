@@ -40,7 +40,7 @@ def call(Map config, Map deployment) {
                 //DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
                 DEFAULT_MAVEN_HOME = tool name: 'maven-jenkins-3_8_1'
                 docker = tool name: 'docker-jenkins'
-                DOCKER_CERT_PATH = credentials('local_harbor')
+//                DOCKER_CERT_PATH = credentials('docker-jenkins')
                 // 远程服务器IP
                 REMOTE_SERVER_IP = "192.168.1.79"
             }
