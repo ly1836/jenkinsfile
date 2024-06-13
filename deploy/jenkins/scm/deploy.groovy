@@ -82,7 +82,7 @@ def call(Map config, Map deployment) {
 
                             // 生产环境发布权限判断
                             env.PERMISSIONS = true
-                            if(ENV_NAME == "production"){
+                            if(ENV_NAME == "Production"){
                                 def masterUsers = readFile "./deploy/jenkins/master-user.txt"
                                 def lines = masterUsers.readLines()
                                 boolean exist = false
