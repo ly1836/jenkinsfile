@@ -32,10 +32,10 @@ def call(Map config, Map deployment) {
                 // 默认镜像
                 DEFAULT_JDK_DOCKER_IMAGE = "openjdk:8"
                 // 默认jdk
-                DEFAULT_JAVA_HOME = "/usr/local/java/jdk1.8.0_281"
-//                DEFAULT_JAVA_HOME = tool name: ''
+                //DEFAULT_JAVA_HOME = "/usr/local/java/jdk1.8.0_281"
+                DEFAULT_JAVA_HOME = tool name: 'jdk-jenkins-1._8_0_281'
                 // 默认maven
-//                DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
+                //DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
                 DEFAULT_MAVEN_HOME = tool name: 'maven-jenkins-3_8_1'
                 // 远程服务器IP
                 REMOTE_SERVER_IP = "192.168.1.79"
@@ -137,10 +137,10 @@ def call(Map config, Map deployment) {
                                     sh "mvn -version"
                                     echo "=================================================="
                                     if (PROFILE == "") {
-                                        sh "mvn clean package -T 8C -DskipTests=true -B -e -U"
+                                        sh "mvn clean package -T 8C -DskipTests=true -B -e -U -s /home/maven/settings.xml"
                                     } else {
                                         // https://www.jianshu.com/p/25aff2bf6e56
-                                        sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U"
+                                        sh "mvn clean package -T 8C -DskipTests=true -P${PROFILE} -B -e -U -s /home/maven/settings.xml"
                                     }
                                 }
                             }
