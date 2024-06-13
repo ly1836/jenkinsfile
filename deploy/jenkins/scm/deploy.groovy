@@ -40,6 +40,7 @@ def call(Map config, Map deployment) {
                 //DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
                 DEFAULT_MAVEN_HOME = tool name: 'maven-jenkins-3_8_1'
                 docker = tool name: 'docker-jenkins'
+                DOCKER_CERT_PATH = credentials('local_harbor')
                 // 远程服务器IP
                 REMOTE_SERVER_IP = "192.168.1.79"
             }
@@ -58,6 +59,7 @@ def call(Map config, Map deployment) {
                     }
                     steps {
                         script {
+                            sh "docker version"
                             env.PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
 
