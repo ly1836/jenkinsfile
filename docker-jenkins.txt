@@ -10,8 +10,6 @@ cd /home/deploy/jenkins
 
 docker run -d \
 -p 8099:8080 -p 50099:50000 \
--v /usr/bin/docker:/usr/bin/docker \
--v /var/run/docker.sock:/var/run/docker.sock \
 -v /home/deploy/jenkins/data:/var/jenkins_home \
 -v /home/deploy/jenkins/maven/settings.xml:/home/maven/settings.xml \
 -v /home/jdk/jdk1.8.0_281:/usr/local/java/jdk1.8.0_281 \

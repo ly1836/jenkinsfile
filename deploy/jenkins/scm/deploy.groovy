@@ -3,7 +3,9 @@
 
 def call(Map config, Map deployment) {
     echo "进入groovy脚本方法"
-
+    tools {
+        'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '26.0.1'
+    }
     // docker仓库配置
     def dockerConfig = [
             // 对应三个发布环境：开发、测试、生产
