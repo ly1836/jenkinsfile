@@ -14,7 +14,7 @@ docker run -d \
 -v /home/maven/apache-maven-3.8.1:/usr/local/maven/apache-maven-3.8.1 \
 -v /usr/local/java/jdk1.8.0_281:/usr/local/java/jdk1.8.0_281 \
 --name jenkins jenkins/jenkins:2.440.3-lts-jdk17
-#--name jenkins jenkins:2.60.3
+#--name registry.cn-hangzhou.aliyuncs.com/aliyun_name_space_ly/jenkins:2.440.3-lts-jdk17
 
 
 
