@@ -110,6 +110,7 @@ def call(Map config, Map deployment) {
                 stage("拉取git仓库代码") {
                     when {
                         environment name: 'REFRESH', value: 'false'
+                        environment name: 'PERMISSIONS', value: 'true'
                     }
                     steps {
                         dir('project-workspace') {
@@ -123,6 +124,7 @@ def call(Map config, Map deployment) {
                 stage("编译Maven工程") {
                     when {
                         environment name: 'REFRESH', value: 'false'
+                        environment name: 'PERMISSIONS', value: 'true'
                     }
                     steps {
                         script {
@@ -147,6 +149,7 @@ def call(Map config, Map deployment) {
                 stage('打包上传镜像') {
                     when {
                         environment name: 'REFRESH', value: 'false'
+                        environment name: 'PERMISSIONS', value: 'true'
                     }
                     steps {
                         script {
@@ -179,6 +182,7 @@ def call(Map config, Map deployment) {
                 stage('远程服务器部署') {
                     when {
                         environment name: 'REFRESH', value: 'false'
+                        environment name: 'PERMISSIONS', value: 'true'
                     }
                     steps {
                         script {
