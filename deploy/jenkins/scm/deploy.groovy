@@ -3,9 +3,6 @@
 
 def call(Map config, Map deployment) {
     echo "进入groovy脚本方法"
-    tools {
-        'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '26.0.1'
-    }
     // docker仓库配置
     def dockerConfig = [
             // 对应三个发布环境：开发、测试、生产
@@ -30,6 +27,9 @@ def call(Map config, Map deployment) {
     if (config.TYPE == "jar") {
         pipeline {
             agent any
+            tools {
+                'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '26.0.1'
+            }
             environment {
                 // 默认镜像
                 DEFAULT_JDK_DOCKER_IMAGE = "openjdk:8"
