@@ -28,9 +28,6 @@ def call(Map config, Map deployment) {
     if (config.TYPE == "jar") {
         pipeline {
             agent any
-            tools {
-                'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'docker-jenkins'
-            }
             environment {
                 // 默认镜像
                 DEFAULT_JDK_DOCKER_IMAGE = "openjdk:8"
