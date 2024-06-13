@@ -87,7 +87,7 @@ def call(Map config, Map deployment) {
                                 def lines = masterUsers.readLines()
                                 boolean exist = false
                                 for (line in lines) {
-                                    echo "master权限用户：${line}"
+                                    echo "Production权限用户：${line}"
                                     if(line == BUILD_USER_ID){
                                         exist = true;
                                     }
