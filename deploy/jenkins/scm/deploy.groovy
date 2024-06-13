@@ -28,7 +28,7 @@ def call(Map config, Map deployment) {
         pipeline {
             agent any
             tools {
-                'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '26.0.1'
+                'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'docker-jenkins'
             }
             environment {
                 // 默认镜像
