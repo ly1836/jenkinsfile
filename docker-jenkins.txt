@@ -10,6 +10,8 @@ cd /home/deploy/jenkins
 
 docker run -d \
 -p 8099:8080 -p 50099:50000 \
+-v /usr/bin/docker:/usr/bin/docker \
+-v /var/run/docker.sock:/var/run/docker.sock \
 -v /home/deploy/jenkins/data:/var/jenkins_home \
 -v /home/deploy/jenkins/maven/settings.xml:/home/maven/settings.xml \
 -v /home/jdk/jdk1.8.0_281:/usr/local/java/jdk1.8.0_281 \
@@ -40,9 +42,8 @@ chown -R jenkins:jenkins /etc/docker/daemon.json
 
 #需要配置全局工具
 http://192.168.1.79:8099/manage/configureTools/
-#1.docker-jenkins          version：26.0.1
-#2.maven-jenkins-3_8_1     version：3.8.1
-#3.jdk-jenkins-1._8_0_281  /usr/local/java/jdk1.8.0_281  (docker启动jenkins时挂载jdk目录)
+#1.maven-jenkins-3_8_1     version：3.8.1
+#2.jdk-jenkins-1._8_0_281  /usr/local/java/jdk1.8.0_281  (docker启动jenkins时挂载jdk目录)
 
 #---------------------------------------------------
 #权限问题

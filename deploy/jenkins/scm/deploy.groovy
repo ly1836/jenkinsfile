@@ -27,9 +27,6 @@ def call(Map config, Map deployment) {
     if (config.TYPE == "jar") {
         pipeline {
             agent any
-            tools {
-                'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'docker-jenkins'
-            }
             environment {
                 // 默认镜像
                 DEFAULT_JDK_DOCKER_IMAGE = "openjdk:8"
@@ -39,8 +36,6 @@ def call(Map config, Map deployment) {
                 // 默认maven
                 //DEFAULT_MAVEN_HOME = "/usr/local/maven/apache-maven-3.8.1"
                 DEFAULT_MAVEN_HOME = tool name: 'maven-jenkins-3_8_1'
-                docker = tool name: 'docker-jenkins'
-//                DOCKER_CERT_PATH = credentials('docker-jenkins')
                 // 远程服务器IP
                 REMOTE_SERVER_IP = "192.168.1.79"
             }
