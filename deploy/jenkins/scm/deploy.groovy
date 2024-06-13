@@ -7,20 +7,20 @@ def call(Map config, Map deployment) {
     // docker仓库配置
     def dockerConfig = [
             // 对应三个发布环境：开发、测试、生产
-            Registrys      : ["local_harbor", "docker_hub", "aliyun"],
+            Registrys     : ["local_harbor", "docker_hub", "aliyun"],
             "local_harbor": [
                     USER_NAME: "admin",
                     PASSWORD : "admin",
                     REGISTRY : "192.168.1.98"
             ],
             "docker_hub"  : [
-                    USER_NAME : "",
-                    PASSWORD: "",
+                    USER_NAME: "",
+                    PASSWORD : "",
                     REGISTRY : ""
             ],
-            "aliyun"  : [
-                    USER_NAME : "18674492943",
-                    PASSWORD: "ly123456",
+            "aliyun"      : [
+                    USER_NAME: "18674492943",
+                    PASSWORD : "ly123456",
                     REGISTRY : "registry.cn-hangzhou.aliyuncs.com"
             ]
     ]
@@ -62,7 +62,7 @@ def call(Map config, Map deployment) {
                             env.DOCKER_PASSWORD = dockerConfig["${REGISTRY_TYPE}"].PASSWORD
                             if (REGISTRY_TYPE == "local_harbor") {
                                 env.IMAGE_NAME = "${DOCKER_REGISTRY}/repository/${deployment.APP_NAME}:latest"
-                            }else if(REGISTRY_TYPE == "aliyun"){
+                            } else if (REGISTRY_TYPE == "aliyun") {
                                 env.IMAGE_NAME = "${DOCKER_REGISTRY}/aliyun_name_space_ly/${deployment.APP_NAME}:latest"
                             } else {
                                 env.IMAGE_NAME = "ly753/${deployment.APP_NAME}:latest"
@@ -74,10 +74,26 @@ def call(Map config, Map deployment) {
                                 DEFAULT_JDK_DOCKER_IMAGE = deployment.JDK_DOCKER_IMAGE
                             }
 
+                            // 构建用户
                             env.BUILD_USER_ID = null
                             wrap([$class: 'BuildUser']) {
                                 env.BUILD_USER_ID = env.BUILD_USER_ID
                             }
+
+                            // 生产环境发布权限判断
+                            env.PERMISSIONS = true
+                            if (ENV_NAME == "Production") {
+                                String[] masterUser = new File("./deploy/jenkins/master-user.txt")
+                                boolean exist = false
+                                masterUser.each { item ->
+                                    echo "master权限用户：${item}"
+                                    if(item == BUILD_USER_ID){
+                                        exist = true;
+                                    }
+                                }
+                                env.PERMISSIONS = exist
+                            }
+
                             echo "默认JDK镜像: ${DEFAULT_JDK_DOCKER_IMAGE}"
                             echo "应用: ${deployment.APP_NAME}"
                             echo "端口: ${deployment.APP_PORT}"
@@ -85,6 +101,7 @@ def call(Map config, Map deployment) {
                             echo "发布环境：${PROFILE}"
                             echo "容器仓库类型：${REGISTRY_TYPE}"
                             echo "构建者：${BUILD_USER_ID}"
+                            echo "是否有发布master权限：${PERMISSIONS}"
                         }
                     }
                 }
@@ -141,7 +158,7 @@ def call(Map config, Map deployment) {
                                     def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
                                     dockerImage.push()
                                 }
-                            }else if(REGISTRY_TYPE == "aliyun"){
+                            } else if (REGISTRY_TYPE == "aliyun") {
                                 docker.withRegistry("http://${DOCKER_REGISTRY}", 'aliyun_docker_18674492943') {
                                     def dockerImage = docker.build("${IMAGE_NAME}", "-f ./deploy/docker/jar/Dockerfile ./project-workspace")
                                     dockerImage.push()
