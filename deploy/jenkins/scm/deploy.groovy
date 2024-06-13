@@ -54,7 +54,6 @@ def call(Map config, Map deployment) {
                     }
                     steps {
                         script {
-                            sh "docker version"
                             env.PROFILE = config["${ENV_NAME}"].PROFILE
                             env.BRANCH = config["${ENV_NAME}"].BRANCH
 
