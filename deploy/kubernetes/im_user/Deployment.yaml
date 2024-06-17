@@ -38,23 +38,23 @@ spec:
         sidecar.istio.io/inject: 'false'
     spec:
       terminationGracePeriodSeconds: 120
-      affinity:
-        nodeAffinity: # 节点亲和度
-          requiredDuringSchedulingIgnoredDuringExecution: # 必须部署到标签 namespace: {{cluster.space}} 的节点
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: namespace
-                    operator: In
-                    values:
-                      - test
-          preferredDuringSchedulingIgnoredDuringExecution: # 尽量部署到标签 app-type: im-user 的节点上
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: app-type
-                    operator: In
-                    values:
-                      - im-user
+#      affinity:
+#        nodeAffinity: # 节点亲和度
+#          requiredDuringSchedulingIgnoredDuringExecution: # 必须部署到标签 namespace: {{cluster.space}} 的节点
+#            nodeSelectorTerms:
+#              - matchExpressions:
+#                  - key: namespace
+#                    operator: In
+#                    values:
+#                      - test
+#          preferredDuringSchedulingIgnoredDuringExecution: # 尽量部署到标签 app-type: im-user 的节点上
+#            - weight: 100
+#              preference:
+#                matchExpressions:
+#                  - key: app-type
+#                    operator: In
+#                    values:
+#                      - im-user
 #        podAntiAffinity: # pod反亲和度
 #          preferredDuringSchedulingIgnoredDuringExecution:
 #            - weight: 1 # 尽量分散部署
@@ -66,15 +66,15 @@ spec:
 #                    app.kubernetes.io/version: DEFAULT
 #                    version: v1
 #                topologyKey: kubernetes.io/hostname
-      tolerations: # 容忍度: app-type: im-user
-        - key: app-type
-          value: im-user
-          effect: NoSchedule
-          operator: Equal
-        - key: namespace # 容忍度 namespace: {{cluster.space}}
-          value: test
-          effect: NoSchedule
-          operator: Equal
+#      tolerations: # 容忍度: app-type: im-user
+#        - key: app-type
+#          value: im-user
+#          effect: NoSchedule
+#          operator: Equal
+#        - key: namespace # 容忍度 namespace: {{cluster.space}}
+#          value: test
+#          effect: NoSchedule
+#          operator: Equal
 #      initContainers:
 #        - name: arthas-container
 #          image: ustc-edu-cn.mirror.aliyuncs.com/hengyunabc/arthas:latest
@@ -128,7 +128,7 @@ spec:
                 --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
                 --add-opens=java.base/java.io=ALL-UNNAMED
                 --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED
-          command: [ "/tini", "--"]
+#          command: [ "/tini", "--"]
 #          args:
 #            - java
 #            - -agentpath:/jprofiler/bin/linux-x64/libjprofilerti.so=port=8849,nowait

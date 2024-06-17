@@ -1,0 +1,136 @@
+## mysql配置文件
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-test-config
+  namespace: test
+  labels:
+    app: redis-test
+data:
+  redis-config: |
+    protected-mode no
+    daemonize no
+    requirepass %Br`k.)ai2,.
+    appendonly yes
+
+---
+
+## PV
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: mysql-test-pv
+#  labels:
+#    app: mysql-test             #设置 pv 的 label 标签
+#spec:
+#  capacity:
+#    storage: 25Gi          #设置 pv 存储资源大小
+#  accessModes:
+#    - ReadWriteOnce
+#  mountOptions:
+#    - hard
+#    - nfsvers=4.1
+#  csi:
+#    driver: nasplugin.csi.alibabacloud.com
+#    volumeAttributes:
+#      path: ''
+#      server: mysql-test-domain
+#    volumeHandle: mysql-test
+#  persistentVolumeReclaimPolicy: Delete
+---
+
+## PVC
+#kind: PersistentVolumeClaim
+#apiVersion: v1
+#metadata:
+#  name: mysql-test-pvc
+#spec:
+#  resources:
+#    requests:
+#      storage: 50Gi        #设置 pvc 存储资源大小
+#  accessModes:
+#    - ReadWriteOnce
+#  selector:
+#    matchLabels:
+#      app: mysql-test           #根据 Label 选择对应 PV
+
+---
+## Service
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: mysql-test
+#  labels:
+#    app: mysql-test
+#spec:
+#  type: NodePort
+#  ports:
+#    - name: mysql
+#      port: 33060 #服务对外端口
+#      targetPort: 3306 #容器端口
+#      nodePort: 30001 #主机端口
+#  selector:
+#    app: mysql-test
+
+---
+
+## Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-test
+  labels:
+    app: redis-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-test
+  template:
+    metadata:
+      labels:
+        app: redis-test
+    spec:
+      containers:
+        - name: redis
+          image: registry.cn-hangzhou.aliyuncs.com/aliyun_name_space_ly/redis:7.2.4
+          command:
+            - redis-server
+            - "/redis-master/redis.conf"
+          ports:
+            - containerPort: 6379
+          env:
+            - name: MASTER
+              value: "true"
+#          resources:
+#            limits:
+#              cpu: 2000m
+#              memory: 512Mi
+#            requests:
+#              cpu: 2000m
+#              memory: 512Mi
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+              subPath: data/redis/data
+            - name: config
+              mountPath: /redis-master
+            - name: localtime
+              readOnly: true
+              mountPath: /etc/localtime
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: pvc-redis-data
+        - name: config
+          configMap:
+            name: redis-test-config
+            items:
+              - key: redis-config
+                path: redis.conf
+        - name: localtime
+          hostPath:
+            type: File
+            path: /etc/localtime
+      imagePullSecrets:
+        - name: aliyun-acr

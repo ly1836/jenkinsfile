@@ -67,21 +67,21 @@ data:
 
 ---
 ## Service
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-test
-  labels:
-    app: mysql-test
-spec:
-  type: NodePort
-  ports:
-    - name: mysql
-      port: 3306
-      targetPort: 3306
-      nodePort: 30001
-  selector:
-    app: mysql-test
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: mysql-test
+#  labels:
+#    app: mysql-test
+#spec:
+#  type: NodePort
+#  ports:
+#    - name: mysql
+#      port: 33060 #服务对外端口
+#      targetPort: 3306 #容器端口
+#      nodePort: 30001 #主机端口
+#  selector:
+#    app: mysql-test
 
 ---
 
@@ -134,18 +134,31 @@ spec:
             exec:
               command: [ "mysqladmin", "-uroot", "-p${MYSQL_ROOT_PASSWORD}", "ping" ]
           volumeMounts:
-            - name: data
-              mountPath: /var/lib/mysql
+            - name: mysql-log
+              mountPath: /var/log
+              subPath: data/log
             - name: config
               mountPath: /etc/mysql/conf.d/my.cnf
               subPath: my.cnf
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+              subPath: data/mysql/data
+            - name: mysql-files
+              mountPath: /var/lib/mysql-files
+              subPath: data/mysql/mysql-files
             - name: localtime
               readOnly: true
               mountPath: /etc/localtime
       volumes:
-        - name: data
+        - name: mysql-log
           persistentVolumeClaim:
-            claimName: mysql-test-pvc
+            claimName: pvc-mysql-log
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: pvc-mysql-data
+        - name: mysql-files
+          persistentVolumeClaim:
+            claimName: pvc-mysql-files
         - name: config
           configMap:
             name: mysql-test-config
